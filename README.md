@@ -1,0 +1,1 @@
+Wir brennen Wälder nieder
