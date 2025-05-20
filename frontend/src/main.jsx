@@ -6,7 +6,6 @@ import LoginPage from "./features/auth/LoginPage.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-
-      <LoginPage />
+      <App />
   </StrictMode>,
 )
