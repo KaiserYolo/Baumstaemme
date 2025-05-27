@@ -1,4 +1,4 @@
-package com.baumstaemme.backend;
+package com.baumstaemme.backend.Application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

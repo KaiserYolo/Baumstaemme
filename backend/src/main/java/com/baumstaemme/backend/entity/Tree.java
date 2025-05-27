@@ -1,54 +1,51 @@
+//TODO Builder
+
 package com.baumstaemme.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
-//import jakarta.persistence.ManyToOne;
 
-@Entity
-@Data
+
+@Entity @Data @Table(name = "trees")
 public class Tree {
 
-    // VARIABLES
-
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // Maybe Sequence
     private Long id;
-
+    @NotBlank @Size(max = 20)
     private String name; // Name for the specific Tree, can be changed by the owner
+    @PositiveOrZero
+    private Long ownerId; // ownerId for now, later User entity
+    @NotNull @OneToOne @JoinColumn(name = "tile_id") // Fremdschlüssel für die Tabelle
+    private Tile tile;
 
-    //@ManyToOne
-    //private User owner; // Could/Should add an extra Entity for Users instead of an ID
-    private long owner; // userId
 
     // Stats/Buildings
+    @Positive
     private int trunk;
+    @Positive
     private int bark;
+    @Positive
     private int branches;
+    @Positive
     private int root;
-    //@OneToMany
-    //private List<Buildings> buildings;
 
     // Resources
+    @PositiveOrZero
     private int leaves;
 
     // Units
+    @PositiveOrZero
     private int stationaryUnits;
+    @PositiveOrZero
     private int movingUnits;
+    @PositiveOrZero
     private int visitingUnits;
-    //@OneToMany
-    //private List<Unit> units;
 
 
     // CONSTRUCTORS
-
     public Tree() {
-        this(0);
-    }
-
-    public Tree(long owner) {
-        this("Herbert", owner, 1, 0, 0, 0, 100, 0, 0, 0);
+        this("Baum", 0, 1, 1, 1, 1, 200, 0, 0, 0);
     }
 
     public Tree(String name, long owner,
@@ -58,7 +55,7 @@ public class Tree {
                 int movingUnits, int visitingUnits
     ) {
         this.name = name;    // Maybe give or generate random Tree names
-        this.owner = owner;
+        this.ownerId = owner;
         this.trunk = trunk;
         this.bark = bark;
         this.branches = branches;
@@ -67,89 +64,5 @@ public class Tree {
         this.stationaryUnits = stationaryUnits;
         this.movingUnits = movingUnits;
         this.visitingUnits = visitingUnits;
-    }
-
-
-    // GETTER & SETTER
-
-    public void setTrunk(int trunk) {
-        if (trunk < 0) {
-            throw new IllegalArgumentException("Trunk must be a positive number");
-        } else {
-            this.trunk = trunk;
-        }
-    }
-
-    public void setBark(int bark) {
-        if (bark < 0) {
-            throw new IllegalArgumentException("Bark must be a positive number");
-        } else {
-            this.bark = bark;
-        }
-    }
-
-    public void setBranches(int branches) {
-        if (branches < 0) {
-            throw new IllegalArgumentException("Branches must be a positive number");
-        } else {
-            this.branches = branches;
-        }
-    }
-
-    public void setRoot(int root) {
-        if (root < 0) {
-            throw new IllegalArgumentException("Root must be a positive integer");
-        } else {
-            this.root = root;
-        }
-    }
-
-    public void setLeaves(int leaves) {
-        if (leaves < 0) {
-            throw new IllegalArgumentException("Leaves must be a positive integer");
-            //this.leaves = 0;
-        } else {
-            this.leaves = leaves;
-        }
-    }
-
-    public void setStationaryUnits(int stationaryUnits) {
-        if (stationaryUnits < 0) {
-            throw new IllegalArgumentException("StationaryUnits must be a positive integer");
-            //this.stationaryUnits = 0;
-        } else {
-            this.stationaryUnits = stationaryUnits;
-        }
-    }
-
-    public void setMovingUnits(int movingUnits) {
-        if (movingUnits < 0) {
-            throw new IllegalArgumentException("MovingUnits must be a positive integer");
-        } else {
-            this.movingUnits = movingUnits;
-        }
-    }
-
-    public void setVisitingUnits(int visitingUnits) {
-        if (visitingUnits < 0) {
-            throw new IllegalArgumentException("VisitingUnits must be a positive integer");
-        } else {
-            this.visitingUnits = visitingUnits;
-        }
-    }
-
-
-    // METHODS
-
-    public void updateResources() {
-        //TODO
-    }
-
-    public void trainUnits() {
-        //TODO
-    }
-
-    public void defendAttack(int incomingUnits) {
-        //TODO
     }
 }
