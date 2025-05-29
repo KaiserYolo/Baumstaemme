@@ -1,20 +1,32 @@
 package com.baumstaemme.backend.controller;
 
+import com.baumstaemme.backend.dto.LoginRequest;
 import com.baumstaemme.backend.entity.User;
 import com.baumstaemme.backend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepo;
 
-    @PostMapping("/addUser")
-    public void  addUser(@RequestBody User user){
-        userRepository.save(user);
+    public AuthController(UserRepository userRepo) {
+        this.userRepo = userRepo;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        System.out.println(">>> Username: " + loginRequest.getUsername());
+        System.out.println(">>> Password: " + loginRequest.getPassword());
+        Optional<User> user = userRepo.findByUsername(loginRequest.getUsername());
+        if (user.isPresent() && user.get().getPassword().equals(loginRequest.getPassword())) {
+            return ResponseEntity.ok("Login successful");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 }
