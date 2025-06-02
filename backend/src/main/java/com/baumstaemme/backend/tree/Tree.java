@@ -1,7 +1,8 @@
 //TODO Builder
 
-package com.baumstaemme.backend.entity;
+package com.baumstaemme.backend.tree;
 
+import com.baumstaemme.backend.tile.Tile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.entity;
+package com.baumstaemme.backend.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

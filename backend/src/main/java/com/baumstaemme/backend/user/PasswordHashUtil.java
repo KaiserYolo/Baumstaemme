@@ -1,16 +1,15 @@
-package com.baumstaemme.backend.services;
+package com.baumstaemme.backend.user;
 
-import com.baumstaemme.backend.entity.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthService {
+public class PasswordHashUtil {
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean checkPassword(User user, String inputPassword) {
-        return passwordEncoder.matches(inputPassword, user.getPassword());
+    public String hashPassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }
