@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.map;
+package com.baumstaemme.backend.webSocket;
 
 import lombok.Getter;
 import lombok.Setter;
