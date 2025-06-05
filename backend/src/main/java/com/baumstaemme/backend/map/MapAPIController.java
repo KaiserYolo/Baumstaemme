@@ -8,11 +8,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/map")
-public class MapController {
+public class MapAPIController {
 
     private final MapService mapService;
 
-    public MapController(MapService mapService) {
+    public MapAPIController(MapService mapService) {
         this.mapService = mapService;
     }
 
