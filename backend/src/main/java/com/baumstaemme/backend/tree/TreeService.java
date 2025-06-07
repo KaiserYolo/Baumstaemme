@@ -29,14 +29,14 @@ public class TreeService {
         return treeRepo.findById(id).get();
     }
 
-    Tree saveTree(Tree tree) {
+    public Tree saveTree(Tree tree) { // Public???
         return treeRepo.save(tree);
     }
 
     // Maybe eigener Service
     // Alle 60 Sekunden Ressourcen produzieren
     @Scheduled(fixedRate = 60000)
-    public void leafProduction() {
+    void leafProduction() {
         List<Tree> trees = treeRepo.findAll();
 
         for (Tree tree : trees) {
