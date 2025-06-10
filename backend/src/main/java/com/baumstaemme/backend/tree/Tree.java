@@ -4,10 +4,14 @@ package com.baumstaemme.backend.tree;
 
 import com.baumstaemme.backend.player.Player;
 import com.baumstaemme.backend.tile.Tile;
+import com.baumstaemme.backend.upgrade.Upgrade;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 @Entity
@@ -36,16 +40,20 @@ public class Tree {
     //private int posY;
 
     // Resources
-    private int leaves = 100;
+    private int leaves = 10000;
     private int leavesProduction = 10;
     //private long lastProducedTimestamp = System.currentTimeMillis();
 
 
     // Stats/Buildings
-    private int trunk = 1;
-    private int bark = 1;
-    private int branches = 1;
-    private int root = 1;
+    private int trunk = 0;
+    private int bark = 0;
+    private int branches = 0;
+    private int root = 0;
+
+    @OneToMany(mappedBy = "tree", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Upgrade> upgradeQueue;
 
 
     // Units
