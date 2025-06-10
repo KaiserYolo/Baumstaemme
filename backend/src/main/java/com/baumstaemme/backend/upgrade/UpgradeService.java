@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -21,7 +20,7 @@ public class UpgradeService {
         this.treeService = treeService;
     }
 
-    public int getBuildingLevel(Tree tree, UpgradeBuilding building) {
+    public int getBuildingLevel(Tree tree, UpgradeType building) {
         return switch (building) {
             case TRUNK -> tree.getTrunk();
             case BARK -> tree.getBark();
@@ -42,16 +41,28 @@ public class UpgradeService {
         return tree.getUpgradeQueue().isEmpty();
     }
 
-    public Upgrade queueUpgrade(Tree tree, UpgradeBuilding building) {
-        int currentLevel = getBuildingLevel(tree, building);
-        int targetLevel = currentLevel + 1; //TODO: Was passiert wenn das Gebäude zweimal in die Queue kommt?
+    public Upgrade queueUpgrade(long treeId, UpgradeType building) {
 
-        //TODO: Eigene Funktion
-        int cost = 50 * targetLevel; //TODO: Baukostenregel einführen
-        long duration = 60 * targetLevel * 1000L; //TODO: Bauzeitenregel einführen
-        //--
+        Tree tree = treeService.getTree(treeId);
 
-        //TODO: Eigene Funktion
+        List<Upgrade> sameTypeUpgrades = getUpgrades(tree)
+                .stream()
+                .filter(upgrade -> upgrade.getBuilding() == building)
+                .toList();
+
+        int currentLevel;
+        if (sameTypeUpgrades.isEmpty()) {
+            currentLevel = getBuildingLevel(tree, building);
+        } else {
+            currentLevel = sameTypeUpgrades.getLast().getTargetLevel();
+        }
+        int targetLevel = currentLevel + 1;
+
+
+        int cost = building.getCost(targetLevel);
+        long duration = building.getDuration(targetLevel) * 1000L;
+
+
         int currentLeaves = tree.getLeaves();
         if (currentLeaves < cost) throw new IllegalArgumentException("Not enough leaves: " + tree.getLeaves());
         tree.setLeaves(currentLeaves - cost);
@@ -64,29 +75,29 @@ public class UpgradeService {
             upgrade.setStartTime(System.currentTimeMillis());
             upgrade.setStatus(UpgradeStatus.IN_PROGRESS);
         } else {
-            upgrade.setStartTime(System.currentTimeMillis() + tree.getUpgradeQueue().getLast().getEndTime());
+            upgrade.setStartTime(tree.getUpgradeQueue().getLast().getEndTime());
             upgrade.setStatus(UpgradeStatus.QUEUED);
 
         }
         upgrade.setEndTime(upgrade.getStartTime() + duration);
         upgrade.setTree(tree);
 
-        tree.getUpgradeQueue().add(upgrade);
-        treeService.saveTree(tree);
 
-        return upgrade;
+        return upgradeRepo.save(upgrade);
     }
 
     public void startNextUpgrade(Tree tree) {
-        Optional<Upgrade> nextUpgrade = tree.getUpgradeQueue()
+        List<Upgrade> upgrades = getUpgrades(tree);
+
+        Upgrade nextUpgrade = upgrades
                 .stream()
                 .filter(upgrade -> upgrade.getStatus() == UpgradeStatus.QUEUED)
-                .findFirst();
+                .findFirst()
+                .orElse(null);
 
-        if (nextUpgrade.isPresent()) {
-            Upgrade upgrade = nextUpgrade.get();
-            upgrade.setStatus(UpgradeStatus.IN_PROGRESS);
-            treeService.saveTree(tree);
+        if (nextUpgrade != null) {
+            nextUpgrade.setStatus(UpgradeStatus.IN_PROGRESS);
+            upgradeRepo.save(nextUpgrade);
         }
     }
 
@@ -108,9 +119,9 @@ public class UpgradeService {
                 treeService.saveTree(tree);
 
                 upgrade.setStatus(UpgradeStatus.DONE);
-                upgradeRepo.save(upgrade);
 
-                //startNextUpgrade(tree);
+                startNextUpgrade(upgradeRepo.save(upgrade).getTree());
+
             }
         }
     }

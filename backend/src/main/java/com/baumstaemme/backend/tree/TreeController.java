@@ -16,8 +16,8 @@ public class TreeController {
         this.treeService = treeService;
     }
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Long>> getAllTrees() {
+    @GetMapping("/getAllIds")
+    public ResponseEntity<List<Long>> getAllIds() {
         return ResponseEntity.ok(treeService.getIds());
     }
 

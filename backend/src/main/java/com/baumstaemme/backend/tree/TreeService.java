@@ -1,6 +1,8 @@
 package com.baumstaemme.backend.tree;
 
 
+import com.baumstaemme.backend.upgrade.Upgrade;
+import com.baumstaemme.backend.upgrade.UpgradeType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +27,25 @@ public class TreeService {
         return treeRepo.findAllIds();
     }
 
-    Tree getTree(long id) {
+    public Tree getTree(long id) {
         return treeRepo.findById(id).get();
+    }
+
+    public int getBuildingLevel(long id, UpgradeType building) {
+        return 0;
     }
 
     public Tree saveTree(Tree tree) { // Public???
         return treeRepo.save(tree);
     }
+
+    public void addUpgrade(Upgrade upgrade) {
+
+    }
+
+
+
+
 
     // Maybe eigener Service
     // Alle 60 Sekunden Ressourcen produzieren

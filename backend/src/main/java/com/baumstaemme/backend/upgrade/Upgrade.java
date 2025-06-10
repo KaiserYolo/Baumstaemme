@@ -20,7 +20,7 @@ public class Upgrade {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private UpgradeBuilding building;
+    private UpgradeType building;
     private int targetLevel;
 
     private long duration;
@@ -30,7 +30,7 @@ public class Upgrade {
     @Enumerated(EnumType.STRING)
     private UpgradeStatus status;
 
-    @ManyToOne
+    @ManyToOne//(cascade = CascadeType.ALL)
     @JoinColumn(name = "village_id")
     @JsonBackReference
     private Tree tree;

@@ -12,11 +12,9 @@ import java.util.List;
 public class UpgradeController {
 
     private final UpgradeService upgradeService;
-    private final TreeRepo treeRepo;
 
-    public UpgradeController(UpgradeService upgradeService, TreeRepo treeRepo) {
+    public UpgradeController(UpgradeService upgradeService) {
         this.upgradeService = upgradeService;
-        this.treeRepo = treeRepo;
     }
 
     @GetMapping("/getAll")
@@ -25,10 +23,8 @@ public class UpgradeController {
     }
 
     @PostMapping("/queue")
-    public ResponseEntity<Upgrade> queueUpgrade(@RequestParam Long treeId, @RequestParam UpgradeBuilding building) {
-        Tree tree = treeRepo.findById(treeId).orElseThrow();
-        Upgrade upgrade = upgradeService.queueUpgrade(tree, building);
-        treeRepo.save(tree);
+    public ResponseEntity<Upgrade> queueUpgrade(@RequestParam Long treeId, @RequestParam UpgradeType building) {
+        Upgrade upgrade = upgradeService.queueUpgrade(treeId, building); //TODO
         return ResponseEntity.ok(upgrade);
     }
 }
