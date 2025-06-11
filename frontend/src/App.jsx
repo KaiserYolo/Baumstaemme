@@ -1,11 +1,13 @@
 import MapView from "./pages/MapView.jsx";
-import MapStage from "./components/MapStage.jsx";
+import MapStage from "./components/old/MapStage.jsx";
+import './App.css'
 
 const App = () => {
     return (
-        <>
-            <MapStage/>
-        </>
+        <div className="App">
+            {/*<MapStage/>*/}
+                <MapView />
+        </div>
     )
 }
 

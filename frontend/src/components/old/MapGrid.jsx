@@ -1,9 +1,9 @@
 //AI generated Code
 
-import Tile from './Tile';
+import Tile from './Tile.jsx';
 
-const mapData = Array.from({ length: 20 }, (_, y) =>
-    Array.from({ length: 30 }, (_, x) => ({
+const mapData = Array.from({ length: 70 }, (_, y) =>
+    Array.from({ length: 70 }, (_, x) => ({
         x,
         y,
         type: (x + y) % 7 === 0 ? 'dorf' : 'wald',

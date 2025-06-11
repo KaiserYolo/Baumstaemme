@@ -1,7 +1,7 @@
 import { Stage, Container } from '@pixi/react';
 import {useState, useEffect, useCallback} from 'react';
-import MapGrid from './MapGrid';
-import {calculateCanvasSize} from "./helpers/common.js";
+import MapGrid from './MapGrid.jsx';
+import {calculateCanvasSize} from "../helpers/common.js";
 
 const MapStage = () => {
 
@@ -11,8 +11,25 @@ const MapStage = () => {
 
     const handleWheel = (e) => {
         e.preventDefault();
-        setZoom((prev) => Math.max(0.5, Math.min(2, prev - e.deltaY * 0.001)));
+
+        const { offsetX, offsetY, deltaY } = e;
+
+        // Zoom-Faktor auf Basis von deltaY
+        const zoomStep = 0.0015; // experimentell anpassbar
+        const zoomFactor = 1 - deltaY * zoomStep;
+
+        const newZoom = Math.max(0.1, Math.min(5, zoom * zoomFactor));
+
+        const mouseX = (offsetX - position.x) / zoom;
+        const mouseY = (offsetY - position.y) / zoom;
+
+        const newX = offsetX - mouseX * newZoom;
+        const newY = offsetY - mouseY * newZoom;
+
+        setZoom(newZoom);
+        setPosition({ x: newX, y: newY });
     };
+
 
     const handleKeyDown = (e) => {
         const move = 50;

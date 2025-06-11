@@ -4,9 +4,9 @@ import * as PIXI from 'pixi.js';
 import { Sprite} from "@pixi/react";
 //import {useMemo} from "react";
 import {Texture} from "pixi.js";
-import dorfImg from '../assets/test_dorf.png';
-import waldImg from '../assets/wald.png';
-import leerImg from '../assets/leer.png';
+import dorfImg from '../../assets/test_dorf.png';
+import waldImg from '../../assets/wald.png';
+import leerImg from '../../assets/leer.png';
 
 const TILE_SIZE = 64;
 
