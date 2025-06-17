@@ -13,6 +13,9 @@ export default function Form(){
         e.preventDefault();
 
         const buttonId = e.nativeEvent.submitter.id;
+        setUsernameError("");
+        setPasswordError("");
+
 
         if(buttonId === "login"){
            console.log("login attempt");
@@ -24,6 +27,8 @@ export default function Form(){
         }
         else{
             console.log("error during login or register");
+            setUsernameError("Something went wrong");
+            setPasswordError("Something went wrong");
         }
 
     }
