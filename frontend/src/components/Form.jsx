@@ -1,5 +1,5 @@
 import {StrictMode, useState} from "react";
-import {loginUser} from "../services/AuthAPI.js";
+import {loginUser, registerUser} from "../services/AuthAPI.js";
 import '../App.css';
 import WoodBox from "./WoodBox.jsx";
 
@@ -23,7 +23,7 @@ export default function Form(){
         }
         else if(buttonId === "register"){
             console.log("register attempt");
-            //const user = await registerUser({username, password});
+            const user = await registerUser({username, password});
         }
         else{
             console.log("error during login or register");
