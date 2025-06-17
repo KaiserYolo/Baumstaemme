@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -26,23 +28,35 @@ public class AuthController {
         System.out.println(">>> Username: " + loginRequestDto.getUsername());
         System.out.println(">>> Password: " + loginRequestDto.getPassword());
         Optional<User> user = userRepo.findByUsername(loginRequestDto.getUsername());
+
+        Map<String, String> response = new HashMap<>();
+
         if (user.isPresent() && authUtil.checkPassword(user.get(), loginRequestDto.getPassword())) {
-            return ResponseEntity.ok("Login successful");
+            response.put("status", "Login successful");
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody LoginRequestDto registerRequest) {
         System.out.println(">>> Registering User: " + registerRequest.getUsername());
+
+        Map<String, String> response = new HashMap<>();
+
         if (userRepo.existsByUsername(registerRequest.getUsername())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username already exists");
+            response.put("status", "User already exists");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordHashUtil.hashPassword(registerRequest.getPassword()));
         userRepo.save(user);
-        return ResponseEntity.ok("User registered successfully");
+
+        response.put("status", "User registered successfully");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/users")
