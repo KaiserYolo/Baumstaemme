@@ -1,55 +1,106 @@
 // src/pixi/InteractionManager.js
 import * as PIXI from 'pixi.js';
 
-export const setupPanningAndZooming = (app, mapContainer) => {
+// Ändere den Parameter von `isMenuOpen` zu `getIsMenuOpen`
+export const setupPanningAndZooming = (app, mapContainer, getIsMenuOpen) => {
     let isDragging = false;
     let prevPosition = null;
+    let dragStartPoint = null;
+    const DRAG_THRESHOLD = 5;
 
     app.stage.interactive = true;
-    app.stage.hitArea = app.screen; // Wichtig, damit Klicks außerhalb von Objekten auf der Stage registriert werden
+    app.stage.hitArea = app.screen;
 
-    app.stage.on('pointerdown', (e) => {
-        if (e.target !== app.stage) return; // Nur interagieren, wenn direkt auf die Stage geklickt wird
-        isDragging = true;
-        prevPosition = e.data.global.clone();
-    });
+    let pointerDownHandler, pointerUpHandler, pointerUpOutsideHandler, pointerMoveHandler, wheelHandler;
 
-    app.stage.on('pointerup', () => {
-        isDragging = false;
-        prevPosition = null;
-    });
+    const enableInteractions = () => {
+        disableInteractions();
 
-    app.stage.on('pointerupoutside', () => {
-        isDragging = false;
-        prevPosition = null;
-    });
+        pointerDownHandler = (e) => {
+            // Hier prüfen wir den aktuellen Zustand des Menüs
+            if (getIsMenuOpen()) return; // Wenn das Menü geöffnet ist, kein Panning starten
 
-    app.stage.on('pointermove', (e) => {
-        if (isDragging && prevPosition) {
-            const newPosition = e.data.global.clone();
-            const dx = newPosition.x - prevPosition.x;
-            const dy = newPosition.y - prevPosition.y;
+            isDragging = true;
+            prevPosition = e.data.global.clone();
+            dragStartPoint = e.data.global.clone();
+        };
 
-            mapContainer.x += dx;
-            mapContainer.y += dy;
+        pointerUpHandler = () => {
+            isDragging = false;
+            dragStartPoint = null;
+        };
 
-            prevPosition = newPosition;
-        }
-    });
+        pointerUpOutsideHandler = () => {
+            isDragging = false;
+            prevPosition = null;
+        };
 
-    app.view.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1; // Zoom out/in
+        pointerMoveHandler = (e) => {
+            if (isDragging && prevPosition && dragStartPoint) {
+                const newPosition = e.data.global.clone();
 
-        const mousePoint = new PIXI.Point(e.offsetX, e.offsetY);
-        const worldPoint = mapContainer.toLocal(mousePoint);
+                const distance = Math.sqrt(
+                    Math.pow(newPosition.x - dragStartPoint.x, 2) +
+                    Math.pow(newPosition.y - dragStartPoint.y, 2)
+                );
 
-        mapContainer.scale.x *= zoomFactor;
-        mapContainer.scale.y *= zoomFactor;
+                // Wenn die Maus sich signifikant bewegt hat UND kein Menü offen ist,
+                // dann ist es ein Drag und wir bewegen die Map.
+                if (distance > DRAG_THRESHOLD && !getIsMenuOpen()) { // Auch hier den aktuellen Zustand prüfen
+                    const dx = newPosition.x - prevPosition.x;
+                    const dy = newPosition.y - prevPosition.y;
 
-        const newMousePoint = mapContainer.toGlobal(worldPoint);
+                    mapContainer.x += dx;
+                    mapContainer.y += dy;
+                }
+                //console.log("old " + prevPosition.x, prevPosition.y);
+                //console.log("new " + newPosition.x, newPosition.y);
+                prevPosition = newPosition;
+            }
+        };
 
-        mapContainer.x -= (newMousePoint.x - mousePoint.x);
-        mapContainer.y -= (newMousePoint.y - mousePoint.y);
-    });
+        wheelHandler = (e) => {
+            // Hier prüfen wir den aktuellen Zustand des Menüs
+            if (getIsMenuOpen()) {
+                e.preventDefault();
+                return;
+            }
+
+            e.preventDefault();
+            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+
+
+            const mousePoint = new PIXI.Point(e.offsetX, e.offsetY);
+            const worldPoint = mapContainer.toLocal(mousePoint);
+
+            mapContainer.scale.x *= zoomFactor;
+            mapContainer.scale.y *= zoomFactor;
+
+            const newMousePoint = mapContainer.toGlobal(worldPoint);
+
+            mapContainer.x -= (newMousePoint.x - mousePoint.x);
+            mapContainer.y -= (newMousePoint.y - mousePoint.y);
+        };
+
+        app.stage.on('pointerdown', pointerDownHandler);
+        app.stage.on('pointerup', pointerUpHandler);
+        app.stage.on('pointerupoutside', pointerUpOutsideHandler);
+        app.stage.on('pointermove', pointerMoveHandler);
+        app.view.addEventListener('wheel', wheelHandler);
+    };
+
+    const disableInteractions = () => {
+        if (pointerDownHandler) app.stage.off('pointerdown', pointerDownHandler);
+        if (pointerUpHandler) app.stage.off('pointerup', pointerUpHandler);
+        if (pointerUpOutsideHandler) app.stage.off('pointerupoutside', pointerUpOutsideHandler);
+        if (pointerMoveHandler) app.stage.off('pointermove', pointerMoveHandler);
+        if (wheelHandler) app.view.removeEventListener('wheel', wheelHandler);
+    };
+
+    // Initialisiere die Interaktionen nur, wenn das Menü nicht geöffnet ist (beim ersten Rendern)
+    if (!getIsMenuOpen()) {
+        enableInteractions();
+    }
+
+    return { enableInteractions, disableInteractions };
 };
