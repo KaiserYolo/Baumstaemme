@@ -1,10 +1,10 @@
 //TODO Builder
 
-package com.baumstaemme.backend.tree;
+package com.baumstaemme.backend.game.tree;
 
-import com.baumstaemme.backend.player.Player;
-import com.baumstaemme.backend.tile.Tile;
-import com.baumstaemme.backend.upgrade.Upgrade;
+import com.baumstaemme.backend.game.player.Player;
+import com.baumstaemme.backend.game.tile.Tile;
+import com.baumstaemme.backend.game.upgrade.Upgrade;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

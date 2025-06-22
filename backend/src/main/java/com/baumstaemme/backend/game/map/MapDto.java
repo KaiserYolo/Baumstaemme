@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.map;
+package com.baumstaemme.backend.game.map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

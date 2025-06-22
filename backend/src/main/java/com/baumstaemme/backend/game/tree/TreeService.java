@@ -1,8 +1,8 @@
-package com.baumstaemme.backend.tree;
+package com.baumstaemme.backend.game.tree;
 
 
-import com.baumstaemme.backend.upgrade.Upgrade;
-import com.baumstaemme.backend.upgrade.UpgradeType;
+import com.baumstaemme.backend.game.upgrade.Upgrade;
+import com.baumstaemme.backend.game.upgrade.UpgradeType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

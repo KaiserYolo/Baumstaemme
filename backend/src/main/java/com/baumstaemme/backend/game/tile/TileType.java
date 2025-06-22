@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.tile;
+package com.baumstaemme.backend.game.tile;
 
 public enum TileType {
     //EMTPY,

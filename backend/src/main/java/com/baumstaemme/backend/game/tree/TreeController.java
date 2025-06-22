@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.tree;
+package com.baumstaemme.backend.game.tree;
 
 
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.tile;
+package com.baumstaemme.backend.game.tile;
 
 
 import jakarta.persistence.*;
@@ -25,10 +25,4 @@ public class Tile {
 
     //@OneToOne(mappedBy = "tile", cascade = CascadeType.ALL)
     //private Tree tree;
-
-    public Tile(int x, int y, TileType type) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-    }
 }

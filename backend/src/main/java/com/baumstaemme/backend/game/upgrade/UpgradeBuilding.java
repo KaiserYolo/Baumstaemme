@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.upgrade;
+package com.baumstaemme.backend.game.upgrade;
 
 public enum UpgradeBuilding {
 

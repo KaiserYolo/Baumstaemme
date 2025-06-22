@@ -1,7 +1,5 @@
-package com.baumstaemme.backend.upgrade;
+package com.baumstaemme.backend.game.upgrade;
 
-import com.baumstaemme.backend.tree.Tree;
-import com.baumstaemme.backend.tree.TreeRepo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
