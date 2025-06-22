@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import {getMap} from "../services/MapAPI.js";
 
 const TILE_SIZE = 64; // Konstante für die Kachelgröße
-const MAP_ID = 15;
+const MAP_ID = 1;
 const TILE_ASSETS = {
     tree: "/assets/test_dorf.png",
     leer: "/assets/leer.png",
@@ -52,8 +52,8 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
 
         const tile = new PIXI.Sprite(PIXI.Assets.get(texturePath));
 
-        tile.x = tileInfo.xcoordinate;
-        tile.y = tileInfo.ycoordinate;
+        tile.x = tileInfo.xcoordinate*TILE_SIZE;
+        tile.y = tileInfo.ycoordinate*TILE_SIZE;
 
         tile.width = TILE_SIZE;
         tile.height = TILE_SIZE;

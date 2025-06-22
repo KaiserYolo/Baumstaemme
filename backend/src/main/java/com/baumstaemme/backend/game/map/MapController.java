@@ -31,11 +31,13 @@ public class MapController {
 
         return ResponseEntity.ok(mapService.createEmptyMap(length, height));
     }
-
+/*
     @GetMapping("/createMap")
     public ResponseEntity<Map> createMap(@RequestParam int length, @RequestParam int heigth) {
         return ResponseEntity.ok(mapService.createMap(length, heigth));
     }
+
+ */
 
     // Kinda useless (only kinda)
     @PostMapping

@@ -19,8 +19,8 @@ public class TileService {
 
     public Tile create(int x, int y) {
         Tile tile = new Tile();
-        tile.setX(x);
-        tile.setY(y);
+        tile.setXCoordinate(x);
+        tile.setYCoordinate(y);
         tile.setType(TileType.TREE);
         return tileRepo.save(tile);
     }
