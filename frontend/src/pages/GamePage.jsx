@@ -1,5 +1,5 @@
 import MapView from "./MapView.jsx";
-import '../App.css'
+import '../Map.css'
 
 export default function GamePage() {
     return (
