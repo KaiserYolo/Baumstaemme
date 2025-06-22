@@ -2,11 +2,11 @@
 import * as PIXI from 'pixi.js';
 
 // Ändere den Parameter von `isMenuOpen` zu `getIsMenuOpen`
-export const setupPanningAndZooming = (app, mapContainer, getIsMenuOpen) => {
+export const setupPanningAndZooming = (app, mapContainer, getIsMenuOpen, mapBounds) => {
     let isDragging = false;
-    let prevPosition = null;
     let dragStartPoint = null;
-    const DRAG_THRESHOLD = 5;
+    let mapStartPoint = null;
+
 
     app.stage.interactive = true;
     app.stage.hitArea = app.screen;
@@ -17,45 +17,56 @@ export const setupPanningAndZooming = (app, mapContainer, getIsMenuOpen) => {
         disableInteractions();
 
         pointerDownHandler = (e) => {
-            // Hier prüfen wir den aktuellen Zustand des Menüs
             if (getIsMenuOpen()) return; // Wenn das Menü geöffnet ist, kein Panning starten
 
             isDragging = true;
-            prevPosition = e.data.global.clone();
             dragStartPoint = e.data.global.clone();
+            mapStartPoint = { x: mapContainer.x, y: mapContainer.y };
+            app.view.style.cursor = 'grabbing';
         };
 
         pointerUpHandler = () => {
             isDragging = false;
             dragStartPoint = null;
+            mapStartPoint = null;
+            app.view.style.cursor = 'grab';
         };
 
         pointerUpOutsideHandler = () => {
             isDragging = false;
-            prevPosition = null;
+            dragStartPoint = null;
+            mapStartPoint = null;
         };
 
         pointerMoveHandler = (e) => {
-            if (isDragging && prevPosition && dragStartPoint) {
-                const newPosition = e.data.global.clone();
+            if (isDragging && dragStartPoint && mapStartPoint) {
+                if (getIsMenuOpen()) return; // Prüfe, ob das Menü während des Drags geöffnet wurde
 
-                const distance = Math.sqrt(
-                    Math.pow(newPosition.x - dragStartPoint.x, 2) +
-                    Math.pow(newPosition.y - dragStartPoint.y, 2)
-                );
+                const newPosition = e.data.global;
 
-                // Wenn die Maus sich signifikant bewegt hat UND kein Menü offen ist,
-                // dann ist es ein Drag und wir bewegen die Map.
-                if (distance > DRAG_THRESHOLD && !getIsMenuOpen()) { // Auch hier den aktuellen Zustand prüfen
-                    const dx = newPosition.x - prevPosition.x;
-                    const dy = newPosition.y - prevPosition.y;
+                // Berechne den gesamten Offset vom Startpunkt des Drags
+                const offsetX = newPosition.x - dragStartPoint.x;
+                const offsetY = newPosition.y - dragStartPoint.y;
 
-                    mapContainer.x += dx;
-                    mapContainer.y += dy;
-                }
-                //console.log("old " + prevPosition.x, prevPosition.y);
-                //console.log("new " + newPosition.x, newPosition.y);
-                prevPosition = newPosition;
+                let newX = mapStartPoint.x + offsetX;
+                let newY = mapStartPoint.y + offsetY;
+
+                // NEU: Logik zur Begrenzung der Position
+                const screenWidth = app.screen.width;
+                const screenHeight = app.screen.height;
+                const mapWidth = mapBounds.width * mapContainer.scale.x;
+                const mapHeight = mapBounds.height * mapContainer.scale.y;
+
+                // Begrenze die linke/obere Kante
+                if (newX > 0) newX = 0;
+                if (newY > 0) newY = 0;
+
+                // Begrenze die rechte/untere Kante
+                if (newX < screenWidth - mapWidth) newX = screenWidth - mapWidth;
+                if (newY < screenHeight - mapHeight) newY = screenHeight - mapHeight;
+
+                mapContainer.x = newX;
+                mapContainer.y = newY;
             }
         };
 
