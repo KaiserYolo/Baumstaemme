@@ -1,6 +1,6 @@
-package com.baumstaemme.backend.map;
+package com.baumstaemme.backend.game.map;
 
-import com.baumstaemme.backend.tile.Tile;
+import com.baumstaemme.backend.game.tile.Tile;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,8 +15,7 @@ public class Map {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private int length;
-    private int height;
+    private int size;
 
     @OneToMany
     private List<Tile> tiles;

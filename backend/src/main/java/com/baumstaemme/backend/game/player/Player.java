@@ -1,7 +1,7 @@
-package com.baumstaemme.backend.player;
+package com.baumstaemme.backend.game.player;
 
 
-import com.baumstaemme.backend.tree.Tree;
+import com.baumstaemme.backend.game.tree.Tree;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

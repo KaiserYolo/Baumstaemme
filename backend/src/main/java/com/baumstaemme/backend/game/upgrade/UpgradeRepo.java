@@ -1,4 +1,4 @@
-package com.baumstaemme.backend.upgrade;
+package com.baumstaemme.backend.game.upgrade;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
