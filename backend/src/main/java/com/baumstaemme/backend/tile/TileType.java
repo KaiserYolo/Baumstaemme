@@ -1,7 +1,7 @@
 package com.baumstaemme.backend.tile;
 
 public enum TileType {
-    //EMTPY,
+    EMTPY,
     TREE,
     EVENT,
     RESOURCE

@@ -1,8 +1,13 @@
 // src/pixi/MapInitializer.js
 import * as PIXI from 'pixi.js';
-import { fetchMapData } from '../utils/ApiMapTest.js';
+import {getMap} from "../services/MapAPI.js";
 
 const TILE_SIZE = 64; // Konstante für die Kachelgröße
+const MAP_ID = 15;
+const TILE_ASSETS = {
+    tree: "/assets/test_dorf.png",
+    leer: "/assets/leer.png",
+}
 
 export const initializePixiApp = (containerRef, width, height) => {
     const app = new PIXI.Application({
@@ -31,16 +36,28 @@ export const setupMapContainers = (app) => {
 };
 
 export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
-    const backendData = await fetchMapData();
+    const backendData = await getMap(MAP_ID);
+
+    if (!backendData || !backendData.tiles) {
+        console.error("Failed to load map data or essential properties are missing.");
+        return;
+    }
 
     // Lade alle Texturen, die benötigt werden
-    await PIXI.Assets.load(Object.values(backendData.assets));
+    await PIXI.Assets.load(Object.values(TILE_ASSETS));
 
     backendData.tiles.forEach(tileInfo => {
-        const texturePath = backendData.assets[tileInfo.type.toLowerCase()];
+        const texturePath = TILE_ASSETS[tileInfo.type.toLowerCase()];
+        if (!texturePath) {
+            console.warn(`No texture found for tile type: ${tileInfo.type}`);
+            return; // Skip rendering this tile if texture path is missing
+        }
+
         const tile = new PIXI.Sprite(PIXI.Assets.get(texturePath));
-        tile.x = tileInfo.x * TILE_SIZE;
-        tile.y = tileInfo.y * TILE_SIZE;
+
+        tile.x = tileInfo.xcoordinate;
+        tile.y = tileInfo.ycoordinate;
+
         tile.width = TILE_SIZE;
         tile.height = TILE_SIZE;
 
@@ -54,6 +71,10 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
 
 
         tile.on('pointerup', (e) => {
+            if (!tile.initialPointerDownGlobal) {
+                console.warn("pointerup fired without a preceding pointerdown for this tile. Skipping click/drag check.");
+                return; // Exit the handler early if no initial position was recorded
+            }
             const currentPointerUpGlobal = e.data.global.clone();
             const distance = Math.sqrt(
                 Math.pow(currentPointerUpGlobal.x - tile.initialPointerDownGlobal.x, 2) +

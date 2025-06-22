@@ -1,5 +1,6 @@
 package com.baumstaemme.backend.map;
 
+import com.baumstaemme.backend.tile.TileUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,9 +8,13 @@ import java.util.List;
 @Service
 public class MapService {
 
+    private final int TILE_SIZE = 64;
+
+    private final TileUtil tileUtil;
     private final MapRepo mapRepo;
 
-    MapService(MapRepo mapRepo) {
+    MapService(TileUtil tileUtil, MapRepo mapRepo) {
+        this.tileUtil = tileUtil;
         this.mapRepo = mapRepo;
     }
 
@@ -21,6 +26,14 @@ public class MapService {
         map.setHeight(height);
 
         return saveMap(map);
+    }
+
+    Map createMap(int mapWidth, int mapHeight) {
+        Map map = new Map();
+        map.setLength(mapWidth);
+        map.setHeight(mapHeight);
+        map.setTiles(tileUtil.createTiles(TILE_SIZE, TILE_SIZE,  mapWidth, mapHeight));
+        return mapRepo.save(map);
     }
 
 
