@@ -27,11 +27,6 @@ export const setupMapContainers = (app) => {
     const uiContainer = new PIXI.Container();
     app.stage.addChild(uiContainer);
 
-    const helpText = new PIXI.Text('Klicken & Ziehen zum Bewegen, Mausrad zum Zoomen', { fontSize: 14, fill: 'white' });
-    helpText.x = 10;
-    helpText.y = 10;
-    uiContainer.addChild(helpText);
-
     return { mapContainer, uiContainer };
 };
 
@@ -40,11 +35,13 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
 
     if (!backendData || !backendData.tiles) {
         console.error("Failed to load map data or essential properties are missing.");
-        return;
+        return null;
     }
 
-    // Lade alle Texturen, die benötigt werden
     await PIXI.Assets.load(Object.values(TILE_ASSETS));
+
+    let maxX = 0;
+    let maxY = 0;
 
     backendData.tiles.forEach(tileInfo => {
         const texturePath = TILE_ASSETS[tileInfo.type.toLowerCase()];
@@ -93,5 +90,12 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         });
 
         mapContainer.addChild(tile);
+        if (tileInfo.xcoordinate > maxX) maxX = tileInfo.xcoordinate;
+        if (tileInfo.ycoordinate > maxY) maxY = tileInfo.ycoordinate;
     });
+    const mapBounds = {
+        width: maxX + TILE_SIZE,
+        height: maxY + TILE_SIZE,
+    };
+    return mapBounds;
 };

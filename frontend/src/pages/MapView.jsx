@@ -25,10 +25,15 @@ const MapView = () => {
         const { mapContainer } = setupMapContainers(app);
         mapContainerRef.current = mapContainer;
 
-        // Übergib die getIsMenuOpen Funktion an setupPanningAndZooming
-        interactionManagerRef.current = setupPanningAndZooming(app, mapContainer, getIsMenuOpen);
+        const initMap = async () => {
+            const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile);
+            if (mapBounds) {
+                // NEU: Übergib die Grenzen und die App-Dimensionen an den InteractionManager
+                interactionManagerRef.current = setupPanningAndZooming(app, mapContainer, getIsMenuOpen, mapBounds);
+            }
+        };
 
-        loadAndRenderTiles(mapContainer, setSelectedTile);
+        initMap();
 
         return () => {
             if (appRef.current) {
@@ -36,7 +41,7 @@ const MapView = () => {
                 appRef.current = null;
             }
         };
-    }, []);
+    }, [getIsMenuOpen()]);
 
     useEffect(() => {
         const handleResize = () => {
