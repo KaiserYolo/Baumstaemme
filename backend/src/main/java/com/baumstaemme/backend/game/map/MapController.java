@@ -27,9 +27,14 @@ public class MapController {
     }
 
     @GetMapping("/createEmtpyMap")
-    public ResponseEntity<Map> createMap(@RequestParam int length, @RequestParam int height) {
+    public ResponseEntity<Map> createEmptyMap(@RequestParam int length, @RequestParam int height) {
 
         return ResponseEntity.ok(mapService.createEmptyMap(length, height));
+    }
+
+    @GetMapping("/createMap")
+    public ResponseEntity<Map> createMap(@RequestParam int length, @RequestParam int heigth) {
+        return ResponseEntity.ok(mapService.createMap(length, heigth));
     }
 
     // Kinda useless (only kinda)
