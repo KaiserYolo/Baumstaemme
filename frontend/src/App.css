@@ -1,4 +1,11 @@
 /*common*/
+@font-face {
+    font-family: "CinzelDecorative";
+    src: url("./assets/fonts/CinzelDecorative-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -73,6 +80,7 @@ html, body {
     display: flex;
     align-items: center;
     position: relative;
+    color: #2c1a0a;
 }
 
 .image {
@@ -96,8 +104,17 @@ html, body {
     text-align: center;
     font-size: 16px;
     font-weight: bold;
-    color: white; /* Adjust for contrast */
+    /*color: #2c1a0a;*/
     pointer-events: none; /* Allow clicks to pass through */
+    font-family: 'CinzelDecorative', cursive;
+}
+
+.woodbox:hover {
+    color: #a2ecff;
+    text-shadow:
+            0 0 4px #7ed6ff,
+            0 0 8px #7ed6ff,
+            0 0 12px #5fc4ff;
 }
 
 /*Form.jsx*/

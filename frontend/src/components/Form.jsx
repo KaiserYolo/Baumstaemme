@@ -3,7 +3,7 @@ import {loginUser, registerUser} from "../services/AuthAPI.js";
 import '../App.css';
 import WoodBox from "./WoodBox.jsx";
 
-export default function Form(){
+export default function Form({onLogin}){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [usernameError, setUsernameError] = useState("");
@@ -20,10 +20,12 @@ export default function Form(){
         if(buttonId === "login"){
            console.log("login attempt");
             const user = await loginUser({username, password});
+            onLogin();
         }
         else if(buttonId === "register"){
             console.log("register attempt");
             const user = await registerUser({username, password});
+            onLogin();
         }
         else{
             console.log("error during login or register");

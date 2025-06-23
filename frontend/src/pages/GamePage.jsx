@@ -3,8 +3,11 @@ import '../Map.css'
 
 export default function GamePage() {
     return (
-        <div className='Map'>
-            <MapView/>
+        <div>
+            <div className="main-content" >
+              <div className='Map'>
+                <MapView/>
+            </div>
         </div>
     );
 }
