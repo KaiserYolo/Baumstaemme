@@ -90,8 +90,8 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         });
 
         mapContainer.addChild(tile);
-        if (tileInfo.xcoordinate > maxX) maxX = tileInfo.xcoordinate;
-        if (tileInfo.ycoordinate > maxY) maxY = tileInfo.ycoordinate;
+        if (tileInfo.xcoordinate*TILE_SIZE > maxX) maxX = tileInfo.xcoordinate*TILE_SIZE;
+        if (tileInfo.ycoordinate*TILE_SIZE > maxY) maxY = tileInfo.ycoordinate*TILE_SIZE;
     });
     const mapBounds = {
         width: maxX + TILE_SIZE,

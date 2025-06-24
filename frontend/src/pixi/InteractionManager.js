@@ -1,117 +1,62 @@
 // src/pixi/InteractionManager.js
 import * as PIXI from 'pixi.js';
+import { Viewport} from "pixi-viewport";
 
-// Ändere den Parameter von `isMenuOpen` zu `getIsMenuOpen`
 export const setupPanningAndZooming = (app, mapContainer, getIsMenuOpen, mapBounds) => {
-    let isDragging = false;
-    let dragStartPoint = null;
-    let mapStartPoint = null;
 
+    console.log("setupPanningAndZooming: app object", app);
+    console.log("setupPanningAndZooming: app.screen", app.screen);
+    console.log("setupPanningAndZooming: app.renderer", app.renderer);
+    console.log("setupPanningAndZooming: app.renderer.events", app.renderer?.events); // Sicherer Zugriff
+    console.log("setupPanningAndZooming: app.renderer.plugins.interaction", app.renderer?.plugins?.interaction); // Sicherer Zugriff
 
-    app.stage.interactive = true;
-    app.stage.hitArea = app.screen;
+    const viewport = new Viewport({
+       worldWidth: mapBounds.width,
+       worldHeight: mapBounds.height,
+       screenWidth: app.screen.width,
+       screenHeight: app.screen.height,
+       interaction: app.renderer.events
+    });
 
-    let pointerDownHandler, pointerUpHandler, pointerUpOutsideHandler, pointerMoveHandler, wheelHandler;
+    app.stage.addChild(viewport);
+    viewport.addChild(mapContainer);
 
-    const enableInteractions = () => {
-        disableInteractions();
+    viewport
+        .drag()
+        .wheel()
+        .decelerate()
+        //.pinch() mobile??
 
-        pointerDownHandler = (e) => {
-            if (getIsMenuOpen()) return; // Wenn das Menü geöffnet ist, kein Panning starten
+    viewport.clamp({
+        direction: "all",
+        overflow: "bounce" // oder discard
+    });
 
-            isDragging = true;
-            dragStartPoint = e.data.global.clone();
-            mapStartPoint = { x: mapContainer.x, y: mapContainer.y };
-            app.view.style.cursor = 'grabbing';
-        };
+    viewport.clampZoom({
+        minScale: 0.1,
+        maxScale: 2,
+    });
 
-        pointerUpHandler = () => {
-            isDragging = false;
-            dragStartPoint = null;
-            mapStartPoint = null;
-            app.view.style.cursor = 'grab';
-        };
+    window.addEventListener('resize', () => {
+        viewport.resize(window.innerWidth, window.innerHeight);
+    });
 
-        pointerUpOutsideHandler = () => {
-            isDragging = false;
-            dragStartPoint = null;
-            mapStartPoint = null;
-        };
-
-        pointerMoveHandler = (e) => {
-            if (isDragging && dragStartPoint && mapStartPoint) {
-                if (getIsMenuOpen()) return; // Prüfe, ob das Menü während des Drags geöffnet wurde
-
-                const newPosition = e.data.global;
-
-                // Berechne den gesamten Offset vom Startpunkt des Drags
-                const offsetX = newPosition.x - dragStartPoint.x;
-                const offsetY = newPosition.y - dragStartPoint.y;
-
-                let newX = mapStartPoint.x + offsetX;
-                let newY = mapStartPoint.y + offsetY;
-
-                // NEU: Logik zur Begrenzung der Position
-                const screenWidth = app.screen.width;
-                const screenHeight = app.screen.height;
-                const mapWidth = mapBounds.width * mapContainer.scale.x;
-                const mapHeight = mapBounds.height * mapContainer.scale.y;
-
-                // Begrenze die linke/obere Kante
-                if (newX > 0) newX = 0;
-                if (newY > 0) newY = 0;
-
-                // Begrenze die rechte/untere Kante
-                if (newX < screenWidth - mapWidth) newX = screenWidth - mapWidth;
-                if (newY < screenHeight - mapHeight) newY = screenHeight - mapHeight;
-
-                mapContainer.x = newX;
-                mapContainer.y = newY;
-            }
-        };
-
-        wheelHandler = (e) => {
-            // Hier prüfen wir den aktuellen Zustand des Menüs
-            if (getIsMenuOpen()) {
-                e.preventDefault();
-                return;
-            }
-
-            e.preventDefault();
-            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-
-
-            const mousePoint = new PIXI.Point(e.offsetX, e.offsetY);
-            const worldPoint = mapContainer.toLocal(mousePoint);
-
-            mapContainer.scale.x *= zoomFactor;
-            mapContainer.scale.y *= zoomFactor;
-
-            const newMousePoint = mapContainer.toGlobal(worldPoint);
-
-            mapContainer.x -= (newMousePoint.x - mousePoint.x);
-            mapContainer.y -= (newMousePoint.y - mousePoint.y);
-        };
-
-        app.stage.on('pointerdown', pointerDownHandler);
-        app.stage.on('pointerup', pointerUpHandler);
-        app.stage.on('pointerupoutside', pointerUpOutsideHandler);
-        app.stage.on('pointermove', pointerMoveHandler);
-        app.view.addEventListener('wheel', wheelHandler);
+/*
+    const enableInteraction = () => {
+        viewport.resume();
     };
 
-    const disableInteractions = () => {
-        if (pointerDownHandler) app.stage.off('pointerdown', pointerDownHandler);
-        if (pointerUpHandler) app.stage.off('pointerup', pointerUpHandler);
-        if (pointerUpOutsideHandler) app.stage.off('pointerupoutside', pointerUpOutsideHandler);
-        if (pointerMoveHandler) app.stage.off('pointermove', pointerMoveHandler);
-        if (wheelHandler) app.view.removeEventListener('wheel', wheelHandler);
-    };
-
-    // Initialisiere die Interaktionen nur, wenn das Menü nicht geöffnet ist (beim ersten Rendern)
-    if (!getIsMenuOpen()) {
-        enableInteractions();
+    const disableInteraction = () => {
+        viewport.pause();
     }
 
-    return { enableInteractions, disableInteractions };
+    if (getIsMenuOpen()) {
+        viewport.pause();
+    } else {
+        viewport.resume();
+    }
+
+ */
+
+    return { viewport, enableInteraction,disableInteraction };
 };
