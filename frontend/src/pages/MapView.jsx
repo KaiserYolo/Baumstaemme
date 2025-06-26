@@ -26,8 +26,11 @@ const MapView = () => {
         const initMap = async () => {
             const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile);
             if (mapBounds) {
-                const { viewport } = setupPanningAndZooming(app, mapContainer, mapBounds);
+                const { viewport } = setupPanningAndZooming(app, mapContainer, mapBounds); //getIsMenuOpen
                         viewportRef.current = viewport;
+                if (viewport){
+                    viewportRef.current = viewport;
+                }
             }
         };
 
@@ -40,8 +43,7 @@ const MapView = () => {
             }
         };
     }, []);
-
-    /*
+/*
     useEffect(() => {
         if (viewportRef.current) {
             if (selectedTile !== null) {
@@ -51,8 +53,7 @@ const MapView = () => {
             }
         }
     }, [selectedTile]);
-
-     */
+*/
 
     useEffect(() => {
         const handleResize = () => {

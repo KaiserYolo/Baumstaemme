@@ -1,6 +1,7 @@
 // src/pixi/MapInitializer.js
 import * as PIXI from 'pixi.js';
 import {getMap} from "../services/MapAPI.js";
+import {Viewport} from "pixi-viewport";
 
 const TILE_SIZE = 64; // Konstante für die Kachelgröße
 const MAP_ID = 1;
@@ -83,6 +84,7 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
             if (distance <= DRAG_THRESHOLD) {
                 console.log(`Kachel geklickt:`, tile.tileData);
                 setSelectedTile(tile.tileData);
+                e.stopPropagation();
             }else {
                 console.log("Kachel gedraggt (Menü nicht geöffnet):", tile.tileData)
             }
@@ -94,8 +96,8 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         if (tileInfo.ycoordinate*TILE_SIZE > maxY) maxY = tileInfo.ycoordinate*TILE_SIZE;
     });
     const mapBounds = {
-        width: maxX + TILE_SIZE,
-        height: maxY + TILE_SIZE,
+        width: backendData.size * TILE_SIZE,    //maxX + TILE_SIZE
+        height: backendData.size * TILE_SIZE,  //maxY + TILE_SIZE
     };
     return mapBounds;
 };
