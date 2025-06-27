@@ -12,9 +12,12 @@ const MapView = () => {
 
     const [selectedTile, setSelectedTile] = useState(null);
 
+    /*
     const getIsMenuOpen = useCallback(() => {
         return selectedTile !== null;
     }, [selectedTile]); // selectedTile als Abhängigkeit, damit der Callback aktualisiert wird
+
+     */
 
     useEffect(() => {
         const app = initializePixiApp(pixiContainerRef.current, window.innerWidth, window.innerHeight);
@@ -43,7 +46,8 @@ const MapView = () => {
             }
         };
     }, []);
-/*
+
+    /*
     useEffect(() => {
         if (viewportRef.current) {
             if (selectedTile !== null) {
@@ -53,7 +57,8 @@ const MapView = () => {
             }
         }
     }, [selectedTile]);
-*/
+
+     */
 
     useEffect(() => {
         const handleResize = () => {

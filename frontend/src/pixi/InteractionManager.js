@@ -2,7 +2,7 @@
 import * as PIXI from 'pixi.js';
 import { Viewport} from "pixi-viewport";
 
-export const setupPanningAndZooming = (app, mapContainer, mapBounds) => { //getIsMenuOpen
+export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //getIsMenuOpen
 
     console.log("setupPanningAndZooming: app object", app);
     console.log("setupPanningAndZooming: app.screen", app.screen);
@@ -10,9 +10,14 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => { //getI
     console.log("setupPanningAndZooming: app.renderer.events", app.renderer?.events); // Sicherer Zugriff
     console.log("setupPanningAndZooming: app.renderer.plugins.interaction", app.renderer?.plugins?.interaction); // Sicherer Zugriff
 
-    if (!app || !app.screen || !app.renderer || !app.renderer.events) {
-        console.error("Ungültiges App-Objekt an setupPanningAndZooming übergeben. Viewport kann nicht initialisiert werden.");
+    if (!app || !app.screen || !app.renderer || !app.renderer.events || !mapBounds || typeof mapBounds.width === 'undefined' || typeof mapBounds.height === 'undefined') {
+        console.error("Ungültiges App-Objekt oder Map-Grenzen an setupPanningAndZooming übergeben. Viewport kann nicht initialisiert werden.");
         return null; // Null zurückgeben, um Abstürze zu vermeiden
+    }
+    const interactionPlugin = app.renderer.plugins?.interaction;
+    if (!interactionPlugin) {
+        console.error('Interaction-Plugin nicht gefunden auf renderer.plugins.interaction');
+        return null;
     }
 
     const viewport = new Viewport({
@@ -20,7 +25,8 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => { //getI
        worldHeight: mapBounds.height,
        screenWidth: app.screen.width,
        screenHeight: app.screen.height,
-       interaction: app.renderer.events
+       events: app.renderer.events,
+
     });
 
     app.stage.addChild(viewport);
@@ -30,7 +36,7 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => { //getI
         .drag()
         .wheel()
         .decelerate()
-        .pinch() //mobile??
+        //.pinch() mobile??
 
     viewport.clamp({
         direction: "all",
@@ -45,7 +51,8 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => { //getI
     window.addEventListener('resize', () => {
         viewport.resize(window.innerWidth, window.innerHeight);
     });
-    /*
+
+/*
     const enableInteraction = () => {
         viewport.resume();
     };
@@ -59,8 +66,8 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => { //getI
     } else {
         viewport.resume();
     }
-     */
 
+ */
 
-    return { viewport }; //, enableInteraction,disableInteraction
+    return { viewport };  //, enableInteraction,disableInteraction
 };
