@@ -8,16 +8,10 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
     console.log("setupPanningAndZooming: app.screen", app.screen);
     console.log("setupPanningAndZooming: app.renderer", app.renderer);
     console.log("setupPanningAndZooming: app.renderer.events", app.renderer?.events); // Sicherer Zugriff
-    console.log("setupPanningAndZooming: app.renderer.plugins.interaction", app.renderer?.plugins?.interaction); // Sicherer Zugriff
 
     if (!app || !app.screen || !app.renderer || !app.renderer.events || !mapBounds || typeof mapBounds.width === 'undefined' || typeof mapBounds.height === 'undefined') {
         console.error("Ungültiges App-Objekt oder Map-Grenzen an setupPanningAndZooming übergeben. Viewport kann nicht initialisiert werden.");
         return null; // Null zurückgeben, um Abstürze zu vermeiden
-    }
-    const interactionPlugin = app.renderer.plugins?.interaction;
-    if (!interactionPlugin) {
-        console.error('Interaction-Plugin nicht gefunden auf renderer.plugins.interaction');
-        return null;
     }
 
     const viewport = new Viewport({
@@ -26,11 +20,12 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
        screenWidth: app.screen.width,
        screenHeight: app.screen.height,
        events: app.renderer.events,
-
+       ticker: app.ticker,
     });
 
     app.stage.addChild(viewport);
     viewport.addChild(mapContainer);
+    viewport.moveCenter(viewport.worldWidth/2, viewport.worldHeight/2);
 
     viewport
         .drag()
@@ -44,8 +39,8 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
     });
 
     viewport.clampZoom({
-        minScale: 0.1,
-        maxScale: 2,
+        minScale: 0.5,
+        maxScale: 1.5,
     });
 
     window.addEventListener('resize', () => {

@@ -34,6 +34,9 @@ const MapView = () => {
                 if (viewport){
                     viewportRef.current = viewport;
                 }
+                else {
+                    console.log("Viewport net richtig", viewport);
+                }
             }
         };
 
