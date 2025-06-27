@@ -14,13 +14,19 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
         console.error("Ungültiges App-Objekt oder Map-Grenzen an setupPanningAndZooming übergeben. Viewport kann nicht initialisiert werden.");
         return null; // Null zurückgeben, um Abstürze zu vermeiden
     }
+    const interactionPlugin = app.renderer.plugins?.interaction;
+    if (!interactionPlugin) {
+        console.error('Interaction-Plugin nicht gefunden auf renderer.plugins.interaction');
+        return null;
+    }
 
     const viewport = new Viewport({
        worldWidth: mapBounds.width,
        worldHeight: mapBounds.height,
        screenWidth: app.screen.width,
        screenHeight: app.screen.height,
-       interaction: app.renderer.events
+       events: app.renderer.events,
+
     });
 
     app.stage.addChild(viewport);

@@ -21,8 +21,10 @@ const MapView = () => {
 
     useEffect(() => {
         console.log("Breite Höhe" + window.innerWidth, window.innerHeight);
+        console.log('PIXICONTAINER:', pixiContainerRef.current);
         const app = initializePixiApp(pixiContainerRef.current, window.innerWidth, window.innerHeight);
         appRef.current = app;
+        console.log('PIXICONTAINER:', pixiContainerRef.current);
         console.log("APP" + app);
 
         const { mapContainer } = setupMapContainers(app);
@@ -31,8 +33,13 @@ const MapView = () => {
         const initMap = async () => {
             const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile);
             if (mapBounds) {
-                const { viewport } = setupPanningAndZooming(app, mapContainer, mapBounds);
-                        viewportRef.current = viewport;
+                const result = setupPanningAndZooming(app, mapContainer, mapBounds);
+                if (result && result.viewport) {
+                    viewportRef.current = result.viewport;
+                } else {
+                    console.error('Viewport konnte nicht initialisiert werden.');
+                }
+
             }
         };
 
