@@ -12,13 +12,18 @@ const MapView = () => {
 
     const [selectedTile, setSelectedTile] = useState(null);
 
+    /*
     const getIsMenuOpen = useCallback(() => {
         return selectedTile !== null;
     }, [selectedTile]); // selectedTile als Abhängigkeit, damit der Callback aktualisiert wird
 
+     */
+
     useEffect(() => {
+        console.log("Breite Höhe" + window.innerWidth, window.innerHeight);
         const app = initializePixiApp(pixiContainerRef.current, window.innerWidth, window.innerHeight);
         appRef.current = app;
+        console.log("APP" + app);
 
         const { mapContainer } = setupMapContainers(app);
         mapContainerRef.current = mapContainer;

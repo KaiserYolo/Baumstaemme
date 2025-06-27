@@ -17,6 +17,7 @@ export const initializePixiApp = (containerRef, width, height) => {
         antialias: true, // Optional: für glattere Kanten
     });
     containerRef.appendChild(app.view);
+    console.log("SCHAU HIER"+app);
     return app;
 };
 
