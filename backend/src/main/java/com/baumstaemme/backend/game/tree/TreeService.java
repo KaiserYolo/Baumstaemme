@@ -46,7 +46,8 @@ public class TreeService {
     }
 
     public Tree getFreeTree(long id) {
-        return (Tree) treeRepo.findByOwner(null).get();
+        //return (Tree) treeRepo.findByOwner(null).get();             //TODO: Idk what I'm doin
+        return null;
     }
 
 

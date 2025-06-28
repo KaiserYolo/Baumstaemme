@@ -30,7 +30,6 @@ public class MapController {
             return null;
         }
         MapDto responseDto = MapUtil.createResponseDto(map, playerId);
-        //return ResponseEntity.ok(responseDto);
-        return null;
+        return ResponseEntity.ok(responseDto);
     }
 }
