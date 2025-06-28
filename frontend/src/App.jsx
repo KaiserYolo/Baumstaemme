@@ -11,7 +11,7 @@ function App() {
 
     return (
         <div>
-            <Header onLoginClick={() => setPage("login")} onTitleClick={() => setPage("landing")} page={page} />
+            <Header onLoginClick={() => setPage("login")} onLogoutClick={() => setPage("login")} onTitleClick={() => setPage("landing")} page={page} />
             {page !== "game" &&
             <div className="scrollable-content">
                 {page === "landing" && <LandingPage />}

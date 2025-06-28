@@ -1,7 +1,7 @@
 import '../App.css';
 import WoodBox from './WoodBox';
 
-export default function Header({onLoginClick, onTitleClick, page}) {
+export default function Header({onLoginClick, onLogoutClick, onTitleClick, page}) {
 
     return (
         <header className="header">
@@ -10,8 +10,8 @@ export default function Header({onLoginClick, onTitleClick, page}) {
                     <WoodBox n={10} text="Die Baumstämme" className="header-title" />
                 </button>
                 {page === "game" ?
-                    (<button className="login-button" onClick={onTitleClick}>
-                        <WoodBox n={4} text="Profil" />
+                    (<button className="login-button" onClick={onLogoutClick}>
+                        <WoodBox n={4} text="Logout" />
                     </button>)
                     :
                     (<button className="login-button" onClick={onLoginClick}>
