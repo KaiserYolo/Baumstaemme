@@ -5,7 +5,7 @@ import {getMap} from "../services/MapAPI.js";
 const TILE_SIZE = 64; // Konstante für die Kachelgröße
 const MAP_ID = 1;
 const TILE_ASSETS = {
-    tree: "/assets/test_dorf.png",
+    tree: "/assets/Baum.png",
     leer: "/assets/leer.png",
 }
 
@@ -13,7 +13,7 @@ export const initializePixiApp = (containerRef, width, height) => {
     const app = new PIXI.Application({
         width: width,
         height: height,
-        backgroundColor: 0x2c3e50,
+        backgroundColor: 0x0d7527,
         antialias: true, // Optional: für glattere Kanten
     });
     containerRef.appendChild(app.view);
@@ -42,6 +42,10 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
 
     let maxX = 0;
     let maxY = 0;
+
+    maxX = Math.max(backendData.size * TILE_SIZE, window.innerWidth * 1.5);
+    maxY = Math.max(backendData.size * TILE_SIZE, window.innerHeight * 1.5);
+
 
     backendData.tiles.forEach(tileInfo => {
         const texturePath = TILE_ASSETS[tileInfo.type.toLowerCase()];
@@ -83,6 +87,7 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
             if (distance <= DRAG_THRESHOLD) {
                 console.log(`Kachel geklickt:`, tile.tileData);
                 setSelectedTile(tile.tileData);
+                //e.stopPropagation();
             }else {
                 console.log("Kachel gedraggt (Menü nicht geöffnet):", tile.tileData)
             }
@@ -90,12 +95,12 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         });
 
         mapContainer.addChild(tile);
-        if (tileInfo.xcoordinate > maxX) maxX = tileInfo.xcoordinate;
-        if (tileInfo.ycoordinate > maxY) maxY = tileInfo.ycoordinate;
+        if (tileInfo.xcoordinate*TILE_SIZE > maxX) maxX = tileInfo.xcoordinate*TILE_SIZE;
+        if (tileInfo.ycoordinate*TILE_SIZE > maxY) maxY = tileInfo.ycoordinate*TILE_SIZE;
     });
     const mapBounds = {
-        width: maxX + TILE_SIZE,
-        height: maxY + TILE_SIZE,
+        width: maxX,
+        height: maxY,
     };
     return mapBounds;
 };

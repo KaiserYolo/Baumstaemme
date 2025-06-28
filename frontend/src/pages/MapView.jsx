@@ -8,15 +8,16 @@ const MapView = () => {
     const pixiContainerRef = useRef(null);
     const appRef = useRef(null);
     const mapContainerRef = useRef(null);
-    const interactionManagerRef = useRef(null);
+    const viewportRef = useRef(null);
 
     const [selectedTile, setSelectedTile] = useState(null);
 
-    // Erstelle eine Callback-Funktion, die den aktuellen Zustand von selectedTile zurückgibt
-    // Dies verhindert, dass setupPanningAndZooming neu initialisiert werden muss
+    /*
     const getIsMenuOpen = useCallback(() => {
         return selectedTile !== null;
     }, [selectedTile]); // selectedTile als Abhängigkeit, damit der Callback aktualisiert wird
+
+     */
 
     useEffect(() => {
         const app = initializePixiApp(pixiContainerRef.current, window.innerWidth, window.innerHeight);
@@ -28,8 +29,14 @@ const MapView = () => {
         const initMap = async () => {
             const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile);
             if (mapBounds) {
-                // NEU: Übergib die Grenzen und die App-Dimensionen an den InteractionManager
-                interactionManagerRef.current = setupPanningAndZooming(app, mapContainer, getIsMenuOpen, mapBounds);
+                const { viewport } = setupPanningAndZooming(app, mapContainer, mapBounds); //getIsMenuOpen
+                        viewportRef.current = viewport;
+                if (viewport){
+                    viewportRef.current = viewport;
+                }
+                else {
+                    console.log("Viewport net richtig", viewport);
+                }
             }
         };
 
@@ -41,7 +48,20 @@ const MapView = () => {
                 appRef.current = null;
             }
         };
-    }, [getIsMenuOpen()]);
+    }, []);
+
+    /*
+    useEffect(() => {
+        if (viewportRef.current) {
+            if (selectedTile !== null) {
+                viewportRef.current.pause();
+            } else {
+                viewportRef.current.resume();
+            }
+        }
+    }, [selectedTile]);
+
+     */
 
     useEffect(() => {
         const handleResize = () => {

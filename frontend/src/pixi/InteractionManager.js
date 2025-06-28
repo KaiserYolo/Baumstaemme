@@ -1,117 +1,68 @@
 // src/pixi/InteractionManager.js
 import * as PIXI from 'pixi.js';
+import { Viewport} from "pixi-viewport";
 
-// Ändere den Parameter von `isMenuOpen` zu `getIsMenuOpen`
-export const setupPanningAndZooming = (app, mapContainer, getIsMenuOpen, mapBounds) => {
-    let isDragging = false;
-    let dragStartPoint = null;
-    let mapStartPoint = null;
+export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //getIsMenuOpen
 
+    console.log("setupPanningAndZooming: app object", app);
+    console.log("setupPanningAndZooming: app.screen", app.screen);
+    console.log("setupPanningAndZooming: app.renderer", app.renderer);
+    console.log("setupPanningAndZooming: app.renderer.events", app.renderer?.events); // Sicherer Zugriff
 
-    app.stage.interactive = true;
-    app.stage.hitArea = app.screen;
-
-    let pointerDownHandler, pointerUpHandler, pointerUpOutsideHandler, pointerMoveHandler, wheelHandler;
-
-    const enableInteractions = () => {
-        disableInteractions();
-
-        pointerDownHandler = (e) => {
-            if (getIsMenuOpen()) return; // Wenn das Menü geöffnet ist, kein Panning starten
-
-            isDragging = true;
-            dragStartPoint = e.data.global.clone();
-            mapStartPoint = { x: mapContainer.x, y: mapContainer.y };
-            app.view.style.cursor = 'grabbing';
-        };
-
-        pointerUpHandler = () => {
-            isDragging = false;
-            dragStartPoint = null;
-            mapStartPoint = null;
-            app.view.style.cursor = 'grab';
-        };
-
-        pointerUpOutsideHandler = () => {
-            isDragging = false;
-            dragStartPoint = null;
-            mapStartPoint = null;
-        };
-
-        pointerMoveHandler = (e) => {
-            if (isDragging && dragStartPoint && mapStartPoint) {
-                if (getIsMenuOpen()) return; // Prüfe, ob das Menü während des Drags geöffnet wurde
-
-                const newPosition = e.data.global;
-
-                // Berechne den gesamten Offset vom Startpunkt des Drags
-                const offsetX = newPosition.x - dragStartPoint.x;
-                const offsetY = newPosition.y - dragStartPoint.y;
-
-                let newX = mapStartPoint.x + offsetX;
-                let newY = mapStartPoint.y + offsetY;
-
-                // NEU: Logik zur Begrenzung der Position
-                const screenWidth = app.screen.width;
-                const screenHeight = app.screen.height;
-                const mapWidth = mapBounds.width * mapContainer.scale.x;
-                const mapHeight = mapBounds.height * mapContainer.scale.y;
-
-                // Begrenze die linke/obere Kante
-                if (newX > 0) newX = 0;
-                if (newY > 0) newY = 0;
-
-                // Begrenze die rechte/untere Kante
-                if (newX < screenWidth - mapWidth) newX = screenWidth - mapWidth;
-                if (newY < screenHeight - mapHeight) newY = screenHeight - mapHeight;
-
-                mapContainer.x = newX;
-                mapContainer.y = newY;
-            }
-        };
-
-        wheelHandler = (e) => {
-            // Hier prüfen wir den aktuellen Zustand des Menüs
-            if (getIsMenuOpen()) {
-                e.preventDefault();
-                return;
-            }
-
-            e.preventDefault();
-            const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
-
-
-            const mousePoint = new PIXI.Point(e.offsetX, e.offsetY);
-            const worldPoint = mapContainer.toLocal(mousePoint);
-
-            mapContainer.scale.x *= zoomFactor;
-            mapContainer.scale.y *= zoomFactor;
-
-            const newMousePoint = mapContainer.toGlobal(worldPoint);
-
-            mapContainer.x -= (newMousePoint.x - mousePoint.x);
-            mapContainer.y -= (newMousePoint.y - mousePoint.y);
-        };
-
-        app.stage.on('pointerdown', pointerDownHandler);
-        app.stage.on('pointerup', pointerUpHandler);
-        app.stage.on('pointerupoutside', pointerUpOutsideHandler);
-        app.stage.on('pointermove', pointerMoveHandler);
-        app.view.addEventListener('wheel', wheelHandler);
-    };
-
-    const disableInteractions = () => {
-        if (pointerDownHandler) app.stage.off('pointerdown', pointerDownHandler);
-        if (pointerUpHandler) app.stage.off('pointerup', pointerUpHandler);
-        if (pointerUpOutsideHandler) app.stage.off('pointerupoutside', pointerUpOutsideHandler);
-        if (pointerMoveHandler) app.stage.off('pointermove', pointerMoveHandler);
-        if (wheelHandler) app.view.removeEventListener('wheel', wheelHandler);
-    };
-
-    // Initialisiere die Interaktionen nur, wenn das Menü nicht geöffnet ist (beim ersten Rendern)
-    if (!getIsMenuOpen()) {
-        enableInteractions();
+    if (!app || !app.screen || !app.renderer || !app.renderer.events || !mapBounds || typeof mapBounds.width === 'undefined' || typeof mapBounds.height === 'undefined') {
+        console.error("Ungültiges App-Objekt oder Map-Grenzen an setupPanningAndZooming übergeben. Viewport kann nicht initialisiert werden.");
+        return null; // Null zurückgeben, um Abstürze zu vermeiden
     }
 
-    return { enableInteractions, disableInteractions };
+    const viewport = new Viewport({
+       worldWidth: mapBounds.width,
+       worldHeight: mapBounds.height,
+       screenWidth: app.screen.width,
+       screenHeight: app.screen.height,
+       events: app.renderer.events,
+       ticker: app.ticker,
+    });
+
+    app.stage.addChild(viewport);
+    viewport.addChild(mapContainer);
+    viewport.moveCenter(viewport.worldWidth/2, viewport.worldHeight/2);
+
+    viewport
+        .drag()
+        .wheel()
+        .decelerate()
+        //.pinch() mobile??
+
+    viewport.clamp({
+        direction: "all",
+        overflow: "bounce" // oder discard
+    });
+
+    viewport.clampZoom({
+        minScale: 0.5,
+        maxScale: 1.5,
+    });
+
+    window.addEventListener('resize', () => {
+        viewport.resize(window.innerWidth, window.innerHeight);
+    });
+
+/*
+    const enableInteraction = () => {
+        viewport.resume();
+    };
+
+    const disableInteraction = () => {
+        viewport.pause();
+    }
+
+    if (getIsMenuOpen()) {
+        viewport.pause();
+    } else {
+        viewport.resume();
+    }
+
+ */
+
+    return { viewport };  //, enableInteraction,disableInteraction
 };

@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,9 @@ public class AuthController {
     private final PasswordHashUtil passwordHashUtil;
     private final AuthUtil authUtil;
 
+    private static final String USER_SESSION_KEY = "loggedInUser";
+    private static final int MINUTES = 60;
+
     public AuthController(UserRepo userRepo, PasswordHashUtil passwordHashUtil, AuthUtil authUtil) {
         this.userRepo = userRepo;
         this.passwordHashUtil = passwordHashUtil;
@@ -24,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
         System.out.println(">>> Username: " + loginRequestDto.getUsername());
         System.out.println(">>> Password: " + loginRequestDto.getPassword());
         Optional<User> user = userRepo.findByUsername(loginRequestDto.getUsername());
@@ -33,6 +38,8 @@ public class AuthController {
 
         if (user.isPresent() && authUtil.checkPassword(user.get(), loginRequestDto.getPassword())) {
             response.put("status", "Login successful");
+            session.setAttribute(USER_SESSION_KEY, user);
+            session.setMaxInactiveInterval(30 * MINUTES);
             return ResponseEntity.ok(response);
         }else {
             response.put("status", "Invalid credentials");
@@ -57,6 +64,13 @@ public class AuthController {
 
         response.put("status", "User registered successfully");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        System.out.println(">>> Logout User: " + session.getId());
+        session.invalidate();
+        return ResponseEntity.ok("Logout successful");
     }
 
     @GetMapping("/users")
