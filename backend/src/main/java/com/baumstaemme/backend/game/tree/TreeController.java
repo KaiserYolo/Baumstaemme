@@ -27,7 +27,7 @@ public class TreeController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Tree> createTree(@RequestParam String name) {
-        return ResponseEntity.ok(treeService.createTree(name));
+    public ResponseEntity<Tree> createTree() {
+        return ResponseEntity.ok(treeService.create());
     }
 }

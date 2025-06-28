@@ -35,23 +35,23 @@ public class MapService {
         Map map = new Map();
         map.setSize(mapSize);
 
-        int maxTrees = 30;
+        int maxTrees = 20;
 
         Random random = new Random();
-        HashSet<Point> points = new HashSet<>();
+        HashSet<Point> coords = new HashSet<>();
 
-        while (points.size() < maxTrees) {
+        while (coords.size() < maxTrees) {
             int x = random.nextInt(map.getSize());
             int y = random.nextInt(map.getSize());
 
-            Point point = new Point(x, y);
-            points.add(point);
+            Point cord = new Point(x, y);
+            coords.add(cord);
         }
 
         List<Tile> tiles = new ArrayList<>();
 
-        for (Point point : points) {
-            Tile tile = tileService.create(point.x, point.y);
+        for (Point coord : coords) {
+            Tile tile = tileService.create(coord);
             tiles.add(tile);
         }
         map.setTiles(tiles);

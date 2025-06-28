@@ -4,5 +4,5 @@ public enum GameStatus {
     CREATED,
     RUNNING,
     ENDED,
-    PAUSED;
+    PAUSED
 }

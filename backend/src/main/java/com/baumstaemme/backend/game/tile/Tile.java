@@ -1,13 +1,16 @@
 package com.baumstaemme.backend.game.tile;
 
 
+import com.baumstaemme.backend.game.tree.Tree;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
+
 
 @Entity
-@Table(name = "tiles")
+@Table(name = "TILES")
 @Data
 @NoArgsConstructor
 public class Tile {
@@ -16,18 +19,11 @@ public class Tile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int xCoordinate;
-    private int yCoordinate;
+    private Point position;
 
     @Enumerated(EnumType.STRING)
     private TileType type;
 
-    //@OneToOne(mappedBy = "tile", cascade = CascadeType.ALL)
-    //private Tree tree;
-
-    public Tile(int xCoordinate, int yCoordinate, TileType type) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
-        this.type = type;
-    }
+    @OneToOne
+    private Tree tree;
 }
