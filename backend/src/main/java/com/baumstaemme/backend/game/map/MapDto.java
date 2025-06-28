@@ -1,13 +1,19 @@
 package com.baumstaemme.backend.game.map;
 
-import lombok.Getter;
+import com.baumstaemme.backend.game.tile.Tile;
+import com.baumstaemme.backend.game.tile.TileDto;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.util.List;
+
+
+@Data
 @NoArgsConstructor
-public class MapDto {
+public class MapDto{
 
     private Long id;
+    private int size;
+
+    private List<TileDto> tiles;
 }

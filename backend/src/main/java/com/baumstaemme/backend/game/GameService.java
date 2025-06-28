@@ -1,11 +1,9 @@
 package com.baumstaemme.backend.game;
 
-
 import com.baumstaemme.backend.game.map.Map;
 import com.baumstaemme.backend.game.map.MapService;
 import com.baumstaemme.backend.game.player.Player;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 
@@ -20,13 +18,17 @@ public class GameService {
         this.mapService = mapService;
     }
 
-
     public Game save(Game game) {
+        if (game == null) {
+            return null;
+        }
         return gameRepo.save(game);
     }
 
     public void delete(Long id) {
-        gameRepo.deleteById(id);
+        if (id != null) {
+            gameRepo.deleteById(id);
+        }
     }
 
     public Game create(GameDto gameDto) {
@@ -36,10 +38,6 @@ public class GameService {
         game.setStatus(GameStatus.CREATED);
         game.setMap(mapService.createMap(gameDto.getMapSize()));
         return save(game);
-    }
-
-    public Game create() {
-        return create(null);
     }
 
     public List<Long> getAllIds() {

@@ -17,9 +17,10 @@ public class TreeService {
         this.treeRepo = treeRepo;
     }
 
-    Tree createTree(String name) {
+    public Tree create() {
         Tree tree = new Tree();
-        tree.setName(name);
+        tree.setName("Baum");
+        tree.setOwner(null);
         return saveTree(tree);
     }
 

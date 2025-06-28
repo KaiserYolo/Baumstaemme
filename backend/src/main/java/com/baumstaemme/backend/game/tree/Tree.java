@@ -31,16 +31,8 @@ public class Tree {
     @JsonBackReference
     private Player owner;
 
-    @OneToOne
-    @JoinColumn(name = "tile_id") // Fremdschlüssel für die Tabelle
-    @JsonBackReference
-    private Tile tile;
-
-    //private int posX;
-    //private int posY;
-
     // Resources
-    private int leaves = 10000;
+    private int leaves = 1000;
     private int leavesProduction = 10;
     //private long lastProducedTimestamp = System.currentTimeMillis();
 
