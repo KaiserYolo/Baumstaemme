@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js';
 import {getMap} from "../services/MapAPI.js";
 
 const TILE_SIZE = 64; // Konstante für die Kachelgröße
-const MAP_ID = 3;
+const MAP_ID = 1;
 const TILE_ASSETS = {
     tree: "/assets/Baum.png",
     leer: "/assets/leer.png",
