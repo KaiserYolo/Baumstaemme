@@ -63,9 +63,12 @@ public class GameController {
         Player player = playerService.create(user.getUsername());
         userService.addPlayer(user.getId(), player);
         gameService.joinGame(id, player);
+        /*
         if(!playerService.findTree(player.getId())){
             playerService.addTree(player.getId(), );
         };
+
+         */
         session.setAttribute(PLAYER_SESSION_ID_KEY, player.getId());
         return ResponseEntity.ok("Server gejoint");
     }

@@ -1,6 +1,6 @@
 package com.baumstaemme.backend.game.tile;
 
-import com.baumstaemme.backend.game.tree.TreeConverter;
+import com.baumstaemme.backend.game.tree.TreeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ public class TileUtil {
         tileDto.setId(tile.getId());
         tileDto.setPosition(tile.getPosition());
         tileDto.setType(tile.getType());
-        tileDto.setTree(createResponseDto(tile.getTree(), playerId));
+        tileDto.setTree(TreeUtil.createResponseDto(tile.getTree(), playerId));
         return tileDto;
     }
 

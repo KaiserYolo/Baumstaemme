@@ -7,7 +7,7 @@ import java.util.List;
 
 public class GameUtil {
 
-    public static GameDto toDto(Game game) {
+    public static GameDto createResponseDto(Game game) {
         if (game == null) {
             return null;
         }
@@ -16,6 +16,12 @@ public class GameUtil {
         gameDto.setName(game.getName());
         gameDto.setCreated(game.getCreated());
         gameDto.setStatus(game.getStatus());
+        gameDto.setMapId(game.getMap().getId());
+
+        //List<Player> players = game.getPlayers(); // TODO macht Server kaputt
+        //List<Long> playerIdList = new ArrayList<>();
+        //players.forEach(player -> {playerIdList.add(player.getId());}); // Do not like this grrrrrrrrrr
+        //gameDto.setPlayerIdList(playerIdList);
         return gameDto;
     }
 
