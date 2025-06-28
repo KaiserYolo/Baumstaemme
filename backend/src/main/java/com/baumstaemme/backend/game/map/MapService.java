@@ -21,16 +21,6 @@ public class MapService {
         this.tileService = tileService;
     }
 
-
-    Map createEmptyMap(int length, int height) {
-
-        Map map = new Map();
-        //map.setLength(length);
-        //map.setHeight(height);
-
-        return saveMap(map);
-    }
-
     public Map createMap(int mapSize) {
         Map map = new Map();
         map.setSize(mapSize);
@@ -59,12 +49,7 @@ public class MapService {
         return saveMap(map);
     }
 
-
-    List<Long> getAllMaps() {
-        return mapRepo.findAllMapIds();
-    }
-
-    Map getMapsById(long id) {
+    Map getById(long id) {
         return mapRepo.findById(id).get();
     }
 

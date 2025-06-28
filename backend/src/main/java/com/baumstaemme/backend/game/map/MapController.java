@@ -1,47 +1,36 @@
 package com.baumstaemme.backend.game.map;
 
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/map")
+@RequestMapping("/api/maps")
 public class MapController {
 
     private final MapService mapService;
+
+    private static final String PLAYER_SESSION_ID_KEY = "playerSession";
 
     public MapController(MapService mapService) {
         this.mapService = mapService;
     }
 
-    @GetMapping("/getMaps")
-    public ResponseEntity<List<Long>> getAllMaps() {
-        return ResponseEntity.ok(mapService.getAllMaps());
-    }
 
-    @GetMapping("/getMap")
-    public ResponseEntity<Map> getMapById(@RequestParam Long id) {
-        return ResponseEntity.ok(mapService.getMapsById(id));
-    }
-
-    @GetMapping("/createEmtpyMap")
-    public ResponseEntity<Map> createEmptyMap(@RequestParam int length, @RequestParam int height) {
-
-        return ResponseEntity.ok(mapService.createEmptyMap(length, height));
-    }
-/*
-    @GetMapping("/createMap")
-    public ResponseEntity<Map> createMap(@RequestParam int length, @RequestParam int heigth) {
-        return ResponseEntity.ok(mapService.createMap(length, heigth));
-    }
-
- */
-
-    // Kinda useless (only kinda)
-    @PostMapping
-    public ResponseEntity<Map> createMap(@RequestBody Map map) {
-        return ResponseEntity.ok(mapService.saveMap(map));
+    @GetMapping("/{id}")
+    public ResponseEntity<MapDto> getMapById(@PathVariable Long id, HttpSession session) {
+        Long playerId = (Long) session.getAttribute(PLAYER_SESSION_ID_KEY);
+        if (playerId == null) {
+            return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+        }
+        Map map = mapService.getById(id);
+        if (map == null) {
+            return null;
+        }
+        MapDto responseDto = MapUtil.createResponseDto(map, playerId);
+        //return ResponseEntity.ok(responseDto);
+        return null;
     }
 }

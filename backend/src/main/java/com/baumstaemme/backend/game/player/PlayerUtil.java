@@ -3,9 +3,9 @@ package com.baumstaemme.backend.game.player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerConverter {
+public class PlayerUtil {
 
-    public static PlayerDto toDto(Player player) {
+    public static PlayerDto createResponseDto(Player player) {
         if (player == null) {
             return null;
         }
@@ -18,7 +18,7 @@ public class PlayerConverter {
     public static List<PlayerDto> toDtoList(List<Player> players) {
         List<PlayerDto> playerDtoList = new ArrayList<>();
         for (Player player : players) {
-            playerDtoList.add(toDto(player));
+            playerDtoList.add(createResponseDto(player));
         }
         return playerDtoList;
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.Enumerated;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,9 @@ public class GameDto {
     @Enumerated(EnumType.STRING)
     private GameStatus status;
 
-    private int maxPlayers;
-    private int mapSize;
-    private int treeDensity;
+    private Long mapId;
+
+    private List<Long> playerIdList;
+
+    private int MapSize;
 }

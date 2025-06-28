@@ -1,11 +1,9 @@
 package com.baumstaemme.backend.game;
 
-import com.baumstaemme.backend.game.map.Map;
 import com.baumstaemme.backend.game.map.MapService;
 import com.baumstaemme.backend.game.player.Player;
 import org.springframework.stereotype.Service;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class GameService {
@@ -40,20 +38,8 @@ public class GameService {
         return save(game);
     }
 
-    public List<Long> getAllIds() {
-        return gameRepo.findAllIds();
-    }
-
     public Game findById(Long id) {
         return gameRepo.findById(id).orElse(null);
-    }
-
-    public List<Player> getPlayers(Long id) {
-        return findById(id).getPlayers();
-    }
-
-    public Map getMap(Long id) {
-        return findById(id).getMap();
     }
 
     public Game updateStatus(Long id, GameStatus status) {
@@ -62,7 +48,8 @@ public class GameService {
         return save(game);
     }
 
-    public Game addPlayer(Long id, Player player) {
+
+    public Game joinGame(Long id, Player player) { //TODO: richtiger RückgabeTyp?
         Game game = findById(id);
         game.getPlayers().add(player);
         return gameRepo.save(game);

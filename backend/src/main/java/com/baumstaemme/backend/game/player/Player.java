@@ -2,6 +2,7 @@ package com.baumstaemme.backend.game.player;
 
 
 import com.baumstaemme.backend.game.tree.Tree;
+import com.baumstaemme.backend.user.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,9 @@ public class Player {
     private long id;
 
     private String username;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    User user;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonManagedReference

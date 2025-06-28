@@ -1,6 +1,7 @@
 package com.baumstaemme.backend.game.tree;
 
 
+import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.game.upgrade.Upgrade;
 import com.baumstaemme.backend.game.upgrade.UpgradeType;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -42,6 +43,10 @@ public class TreeService {
 
     public void addUpgrade(Upgrade upgrade) {
 
+    }
+
+    public Tree getFreeTree(long id) {
+        return (Tree) treeRepo.findByOwner(null).get();
     }
 
 

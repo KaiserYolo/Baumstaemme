@@ -9,4 +9,6 @@ public interface TreeRepo extends JpaRepository<Tree, Long> {
 
     @Query("SELECT tree.id FROM Tree tree")
     List<Long> findAllIds();
+
+    List<Object> findByOwner(Object o);
 }

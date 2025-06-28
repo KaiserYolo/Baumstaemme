@@ -15,5 +15,7 @@ public class TileDto {
 
     private TileType type;
 
+    private Boolean ownership;
+
     private TreeDto tree;
 }

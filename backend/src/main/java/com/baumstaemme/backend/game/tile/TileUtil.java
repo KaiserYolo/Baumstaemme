@@ -5,9 +5,9 @@ import com.baumstaemme.backend.game.tree.TreeConverter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileConverter {
+public class TileUtil {
 
-    public static TileDto toDto(Tile tile) {
+    public static TileDto createResponseDto(Tile tile, Long playerId) {
         if (tile == null) {
             return null;
         }
@@ -15,14 +15,14 @@ public class TileConverter {
         tileDto.setId(tile.getId());
         tileDto.setPosition(tile.getPosition());
         tileDto.setType(tile.getType());
-        tileDto.setTree(TreeConverter.toDto(tile.getTree()));
+        tileDto.setTree(createResponseDto(tile.getTree(), playerId));
         return tileDto;
     }
 
-    public static List<TileDto> toDtoList(List<Tile> tiles) {
+    public static List<TileDto> createResponseDto(List<Tile> tiles, Long playerId) {
         List<TileDto> tileDtoList = new ArrayList<>();
         for (Tile tile : tiles) {
-            tileDtoList.add(toDto(tile));
+            tileDtoList.add(createResponseDto(tile, playerId));
         }
         return tileDtoList;
     }
