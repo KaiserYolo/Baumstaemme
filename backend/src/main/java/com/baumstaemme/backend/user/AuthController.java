@@ -29,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto, HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto) { //HttpSession session
         System.out.println(">>> Username: " + loginRequestDto.getUsername());
         System.out.println(">>> Password: " + loginRequestDto.getPassword());
         Optional<User> user = userRepo.findByUsername(loginRequestDto.getUsername());
@@ -38,8 +38,8 @@ public class AuthController {
 
         if (user.isPresent() && authUtil.checkPassword(user.get(), loginRequestDto.getPassword())) {
             response.put("status", "Login successful");
-            session.setAttribute(USER_SESSION_KEY, user);
-            session.setMaxInactiveInterval(30 * MINUTES);
+            //session.setAttribute(USER_SESSION_KEY, user);
+            //session.setMaxInactiveInterval(30 * MINUTES);
             return ResponseEntity.ok(response);
         }else {
             response.put("status", "Invalid credentials");

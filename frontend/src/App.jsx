@@ -11,11 +11,11 @@ function App() {
 
     return (
         <div>
-            <Header onLoginClick={() => setPage("login")} onTitleClick={() => setPage("landing")} />
+            <Header onLoginClick={() => setPage("login")} onTitleClick={() => setPage("landing")} page={page} />
             {page !== "game" &&
             <div className="scrollable-content">
                 {page === "landing" && <LandingPage />}
-                {page === "login" && <LoginPage />}
+                {page === "login" && <LoginPage onLogin={() => setPage("game")} />}
                 <Footer />
             </div>
             }
