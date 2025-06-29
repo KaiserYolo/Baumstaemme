@@ -40,7 +40,6 @@ public class AuthController {
             User user = userOptional.get();
             response.put("status", "Login successful");
             session.setAttribute(USER_SESSION_KEY, user);
-            session.setMaxInactiveInterval(30 * MINUTES);
             System.out.println(session.getAttribute(USER_SESSION_KEY));
             return ResponseEntity.ok(response);
         }else {
@@ -62,9 +61,12 @@ public class AuthController {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordHashUtil.hashPassword(registerRequest.getPassword()));
-        session.setAttribute(USER_SESSION_KEY, user);
-        session.setMaxInactiveInterval(30 * MINUTES);
         userRepo.save(user);
+        Optional<User> optinalSessionUser = userRepo.findByUsername(registerRequest.getUsername());
+        User sessionUser = optinalSessionUser.get();
+        session.setAttribute(USER_SESSION_KEY,sessionUser);
+        System.out.println(session.getAttribute(USER_SESSION_KEY));
+        System.out.println(session);
 
         response.put("status", "User registered successfully");
         return ResponseEntity.ok(response);

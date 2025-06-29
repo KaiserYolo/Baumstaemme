@@ -30,7 +30,7 @@ const TileMenu = ({ tileId, onClose }) => {
                     "tree": {
                         "id": 20,
                         "name": "Baum",
-                        "owner": null,
+                        "ownerName": null,
                         "leaves": 1210,
                         "leavesProduction": 10
                     }
@@ -42,18 +42,18 @@ const TileMenu = ({ tileId, onClose }) => {
     return (
         <div className="overlay">
             <div className="overlay-section">
-                {/* <TileMenuTitleComponent name={items.tiles[0].tree.name} isTitle="true"/> */}
-                <TileMenuTitleComponent name={`Owner: ${treeData.tiles[0].tree.owner}`}/>
-                <TileMenuTitleComponent name={`x: ${treeData.tiles[0].position.x}, y: ${treeData.tiles[0].position.y}`}/>
+                <TileMenuTitleComponent name={treeData.name} isTitle="true"/>
+                <TileMenuTitleComponent name={`Owner: ${treeData.ownerName}`}/>
+                <TileMenuTitleComponent name={`x: ${treeData.position.x}, y: ${treeData.position.y}`}/>
             </div>
             <div className="overlay-resource-info">
                 <div className="overlay-resource">
-                    <TileMenuResourceComponent valueName={"leaves"} value={treeData.tiles[0].tree.leaves}/>
+                    <TileMenuResourceComponent valueName={"leaves"} value={treeData.leaves}/>
                     <TileMenuResourceComponent valueName={"troops"} value={580}/>
                 </div>
             </div>
             <div className="overlay-section">
-                <TileMenuComponent valueName={"Leaves production"} value={items.tiles[0].tree.leavesProduction} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
+                <TileMenuComponent valueName={"Leaves production"} value={treeData.leavesProduction} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
             </div>
             <div className="overlay-section">
                 <button className="test-button" onClick={onClose}>

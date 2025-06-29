@@ -55,8 +55,9 @@ public class GameController {
 
     @PutMapping("/{id}/join")
     public ResponseEntity<?> joinGame(@PathVariable Long id, HttpSession session) {
+        System.out.println(session.getAttribute(USER_SESSION_KEY));
+        System.out.println(session);
         User user = (User) session.getAttribute(USER_SESSION_KEY);
-
         if (gameService.findById(id) == null && user == null) {
             return ResponseEntity.badRequest().build();
         }

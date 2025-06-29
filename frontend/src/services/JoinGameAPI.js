@@ -3,6 +3,7 @@ export const joinGameAPI = async (gameId) => {
         const url = new URL(`http://localhost:8080/api/games/${gameId}/join`);
         const response = await fetch(url, {
             method: 'PUT',
+            credentials: "include",
         })
         if (!response.ok) {
             throw new Error(response.statusText);

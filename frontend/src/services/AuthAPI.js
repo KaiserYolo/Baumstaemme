@@ -3,6 +3,7 @@ export async function loginUser(credentials) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
+        credentials: "include",
     });
 
     if (!response.ok) {
@@ -17,6 +18,7 @@ export async function registerUser(credentials) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
+        credentials: "include",
     });
 
     if (!response.ok) {

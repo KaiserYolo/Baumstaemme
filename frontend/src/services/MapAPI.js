@@ -3,6 +3,7 @@ export const getMap = async (id) => {
         const url = new URL(`http://localhost:8080/api/maps/${id}`)
         const response = await fetch(url, {
             method: 'GET',
+            credentials: "include",
         })
         if (!response.ok) {
             throw new Error(response.statusText);
