@@ -21,11 +21,11 @@ public class MapController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MapDto> getMapById(@PathVariable Long id, HttpSession session) {
-        //Long playerId = (Long) session.getAttribute(PLAYER_SESSION_ID_KEY);
-        //if (playerId == null) {
-        //    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        //}
-        Long playerId = null;
+        Long playerId = (Long) session.getAttribute(PLAYER_SESSION_ID_KEY); // TODO ich brauche die ID unbedingt oder ich komme
+        if (playerId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        //Long playerId = 1L; // Placeholder
         Map map = mapService.findById(id);
         if (map == null) {
             return null;

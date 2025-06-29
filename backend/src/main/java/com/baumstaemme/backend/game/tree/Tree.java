@@ -29,12 +29,9 @@ public class Tree {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    @JsonBackReference
     private Player owner;
 
-    //@OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "tile_id")
-    //private Tile tile;
+    private Point position;
 
     // Resources
     private int leaves = 1000;

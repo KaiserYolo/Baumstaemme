@@ -47,7 +47,8 @@ public class MapService {
         List<Tile> tiles = new ArrayList<>();
 
         for (Point coord : coords) {
-            Tile tile = tileService.create(coord);
+            Tile tile = tileService.create(coord); //TODO
+
             tiles.add(tile);
         }
         map.setTiles(tiles);

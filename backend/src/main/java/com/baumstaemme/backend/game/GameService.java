@@ -4,6 +4,7 @@ import com.baumstaemme.backend.game.map.MapService;
 import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.game.player.PlayerService;
 import com.baumstaemme.backend.game.tree.Tree;
+import com.baumstaemme.backend.game.tree.TreeService;
 import com.baumstaemme.backend.user.User;
 import com.baumstaemme.backend.user.UserService;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,14 @@ public class GameService {
     private final MapService mapService;
     private final UserService userService;
     private final PlayerService playerService;
+    private final TreeService treeService;
 
-    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService) {
+    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService, TreeService treeService) {
         this.gameRepo = gameRepo;
         this.mapService = mapService;
         this.userService = userService;
         this.playerService = playerService;
+        this.treeService = treeService;
     }
 
     public Game save(Game game) {
@@ -66,8 +69,11 @@ public class GameService {
         if (game == null) {
             return null;
         }
+
         Player player = userService.addPlayer(userId);
         Tree tree = mapService.getFreeTree(game.getMap());
+        tree.setOwner(player);
+        tree = treeService.save(tree);
         player = playerService.addTree(player, tree);
         game.getPlayers().add(player);
         

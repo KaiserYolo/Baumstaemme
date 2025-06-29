@@ -1,7 +1,6 @@
 package com.baumstaemme.backend.game.tile;
 
 import com.baumstaemme.backend.game.player.Player;
-import com.baumstaemme.backend.game.tree.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ public class TileUtil {
         tileDto.setId(tile.getId());
         tileDto.setPosition(tile.getPosition());
         tileDto.setType(tile.getType());
-
 
         Player owner = tile.getTree().getOwner();
         if (owner == null) {

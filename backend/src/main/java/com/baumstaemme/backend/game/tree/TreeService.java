@@ -8,6 +8,7 @@ import com.baumstaemme.backend.game.upgrade.UpgradeType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 
 @Service
@@ -19,10 +20,11 @@ public class TreeService {
         this.treeRepo = treeRepo;
     }
 
-    public Tree create() {
+    public Tree create(Point position) {
         Tree tree = new Tree();
         tree.setName("Baum");
         tree.setOwner(null);
+        tree.setPosition(position);
         return save(tree);
     }
 
