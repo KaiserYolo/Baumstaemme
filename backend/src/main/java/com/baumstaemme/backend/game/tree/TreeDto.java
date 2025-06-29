@@ -1,5 +1,6 @@
 package com.baumstaemme.backend.game.tree;
 
+import com.baumstaemme.backend.game.upgrade.UpgradeDto;
 import lombok.Data;
 
 import java.awt.*;
@@ -22,4 +23,6 @@ public class TreeDto {
     private int bark;
     private int branches;
     private int root;
+
+    private UpgradeDto upgrade;
 }

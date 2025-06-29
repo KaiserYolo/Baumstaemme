@@ -1,6 +1,9 @@
 package com.baumstaemme.backend.game.tree;
 
+import com.baumstaemme.backend.game.upgrade.Upgrade;
 import com.baumstaemme.backend.game.upgrade.UpgradeDto;
+import com.baumstaemme.backend.game.upgrade.UpgradeType;
+import com.baumstaemme.backend.game.upgrade.UpgradeUtil;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +33,14 @@ public class TreeController {
     }
 
     @PostMapping("/{id}/upgrade")
-    public ResponseEntity<TreeDto> upgrade(@PathVariable Long id, @RequestBody UpgradeDto upgradeDto, HttpSession session) {
+    public ResponseEntity<UpgradeDto> upgrade(@PathVariable Long id, @RequestBody UpgradeDto requestDto, HttpSession session) {
         Long playerId = (Long) session.getAttribute(PLAYER_SESSION_ID_KEY);
         Tree tree = treeService.findById(id);
         if (tree == null || !playerId.equals(tree.getOwner().getId())) {
             return ResponseEntity.notFound().build();
         }
-        // TODO
-        return null;
+        Upgrade upgrade = treeService.addUpgrade(tree, requestDto.getBuilding());
+        UpgradeDto responseDto = UpgradeUtil.createResponseDto(upgrade);
+        return ResponseEntity.ok(responseDto);
     }
 }

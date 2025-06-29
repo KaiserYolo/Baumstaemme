@@ -1,5 +1,9 @@
 package com.baumstaemme.backend.game.tree;
 
+import com.baumstaemme.backend.game.upgrade.Upgrade;
+import com.baumstaemme.backend.game.upgrade.UpgradeDto;
+import com.baumstaemme.backend.game.upgrade.UpgradeUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +41,12 @@ public class TreeUtil {
             treeDto.setBark(tree.getBark());
             treeDto.setBranches(tree.getBranches());
             treeDto.setRoot(tree.getRoot());
+
+            Upgrade upgrade = tree.getUpgrade();
+            if (upgrade != null) {
+                UpgradeDto upgradeDto = UpgradeUtil.createResponseDto(upgrade);
+                treeDto.setUpgrade(upgradeDto);
+            }
         }
         return treeDto;
     }

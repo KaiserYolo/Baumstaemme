@@ -13,13 +13,38 @@ import java.util.List;
 public class UpgradeService {
 
     private final UpgradeRepo upgradeRepo;
-    private final TreeService treeService;
 
-    public UpgradeService(UpgradeRepo upgradeRepo, TreeService treeService) {
+    public UpgradeService(UpgradeRepo upgradeRepo) {
         this.upgradeRepo = upgradeRepo;
-        this.treeService = treeService;
     }
 
+    public Upgrade save(Upgrade upgrade) {
+        return upgradeRepo.save(upgrade);
+    }
+
+    public void delete(Upgrade upgrade) {
+        upgradeRepo.delete(upgrade);
+    }
+
+    public List<Upgrade> findAll() {
+        return upgradeRepo.findAll();
+    }
+
+    public Upgrade createUpgrade(int currentLevel, UpgradeType upgradeType) {
+        if (upgradeType == null) {
+            return null;
+        }
+        Upgrade upgrade = new Upgrade();
+        upgrade.setBuilding(upgradeType);
+
+        int targetLevel = currentLevel + 1;
+        upgrade.setTargetLevel(targetLevel);
+        upgrade.setCost(upgradeType.getCost(targetLevel));
+        upgrade.setDuration(upgradeType.getDuration(targetLevel));
+        return save(upgrade);
+    }
+
+    /*
     public int getBuildingLevel(Tree tree, UpgradeType building) {
         return switch (building) {
             case TRUNK -> tree.getTrunk();
@@ -32,6 +57,7 @@ public class UpgradeService {
     public List<Upgrade> getAllUpgrades() {
         return upgradeRepo.findAll();
     }
+
 
     public List<Upgrade> getUpgrades(Tree tree) { // Util ?
         return tree.getUpgradeQueue();
@@ -125,4 +151,5 @@ public class UpgradeService {
             }
         }
     }
+    */
 }

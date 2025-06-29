@@ -1,10 +1,9 @@
 package com.baumstaemme.backend.game.tree;
 
-
-import com.baumstaemme.backend.game.player.Player;
-import com.baumstaemme.backend.game.tile.Tile;
 import com.baumstaemme.backend.game.upgrade.Upgrade;
+import com.baumstaemme.backend.game.upgrade.UpgradeService;
 import com.baumstaemme.backend.game.upgrade.UpgradeType;
+import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +14,11 @@ import java.util.List;
 public class TreeService {
 
     private final TreeRepo treeRepo;
+    private final UpgradeService upgradeService;
 
-    public TreeService(TreeRepo treeRepo) {
+    public TreeService(TreeRepo treeRepo, UpgradeService upgradeService) {
         this.treeRepo = treeRepo;
+        this.upgradeService = upgradeService;
     }
 
     public Tree create(Point position) {
@@ -36,46 +37,60 @@ public class TreeService {
         return treeRepo.findById(id).orElse(null);
     }
 
-    List<Long> getIds() {
-        return treeRepo.findAllIds();
-    }
-
-    public Tree findById(long id) {
-        return treeRepo.findById(id).orElse(null);
-    }
-
-    public int getBuildingLevel(long id, UpgradeType building) {
-        return 0;
-    }
-
-    public Tree saveTree(Tree tree) {
-        return treeRepo.save(tree);
-    }
-
-    public void addUpgrade(Upgrade upgrade) {
-
-    }
-
-    public Tree setOwner(long id, Player player) {
-        Tree tree = findById(id);
-        if (tree == null) {
+    public Upgrade addUpgrade(Tree tree, UpgradeType upgradeType) {
+        if (tree == null || tree.getUpgrade() != null || upgradeType == null) {
             return null;
         }
-        tree.setOwner(player);
-        return save(tree);
+        int currentLevel = tree.getBuildingLevel(upgradeType);
+        Upgrade upgrade = upgradeService.createUpgrade(currentLevel, upgradeType);
+
+        int leaves = tree.getLeaves();
+        int cost = upgrade.getCost();
+        if (leaves < cost) {
+            return null;
+        }
+        tree.setLeaves(leaves - cost);
+
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + upgrade.getDuration() * 1000L;
+        upgrade.setStartTime(startTime);
+        upgrade.setEndTime(endTime);
+
+        tree.setUpgrade(upgrade);
+        save(tree);
+
+        return upgrade;
     }
 
-
-    // Maybe eigener Service
-    // Alle 60 Sekunden Ressourcen produzieren
-    @Scheduled(fixedRate = 60000)
-    void leafProduction() {
+    // TODO
+    private void leafProduction() {
         List<Tree> trees = treeRepo.findAll();
 
         for (Tree tree : trees) {
             tree.setLeaves(tree.getLeaves() + tree.getLeavesProduction());
-            saveTree(tree);
+            save(tree);
         }
-        System.out.println("Productioncycle finished!");
+    }
+
+
+    private void processUpgrade() {
+        long now = System.currentTimeMillis();
+        List<Tree> trees = treeRepo.findAll().stream().filter(tree -> tree.getUpgrade() != null).toList();
+        for (Tree tree : trees) {
+            Upgrade upgrade = tree.getUpgrade();
+            if (upgrade.getEndTime() <= now) {
+                tree.setBuildingLevel(upgrade.getBuilding());
+                tree.setUpgrade(null);
+                treeRepo.save(tree);
+                System.out.println("Upgrade für Tree ID: " + tree.getId() + " abgeschlossen und entfernt.");
+            }
+        }
+    }
+
+    @Scheduled(fixedRate = 10000)
+    @Transactional
+    public synchronized  void processGameTick() {
+        leafProduction();
+        processUpgrade();
     }
 }

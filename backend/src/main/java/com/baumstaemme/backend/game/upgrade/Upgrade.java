@@ -1,8 +1,7 @@
 package com.baumstaemme.backend.game.upgrade;
 
 
-import com.baumstaemme.backend.game.tree.Tree;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Upgrade {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +20,7 @@ public class Upgrade {
     @Enumerated(EnumType.STRING)
     private UpgradeType building;
     private int targetLevel;
+    private int cost;
 
     private long duration;
     private long startTime;
@@ -29,11 +28,4 @@ public class Upgrade {
 
     @Enumerated(EnumType.STRING)
     private UpgradeStatus status;
-
-    @ManyToOne//(cascade = CascadeType.ALL)
-    @JoinColumn(name = "village_id")
-    @JsonBackReference
-    private Tree tree;
-
-
 }
