@@ -1,8 +1,17 @@
 package com.baumstaemme.backend.game.tree;
 
-import com.baumstaemme.backend.game.player.PlayerUtil;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TreeUtil {
+
+    public static List<TreeDto> createResponseDto(List<Tree> trees, Long playerId) {
+        List<TreeDto> treeDtoList = new ArrayList<>();
+        for(Tree tree : trees){
+            treeDtoList.add(createResponseDto(tree, playerId));
+        }
+        return treeDtoList;
+    }
 
     public static TreeDto createResponseDto(Tree tree, Long playerId) {
         if (tree == null) {
@@ -11,9 +20,21 @@ public class TreeUtil {
         TreeDto treeDto = new TreeDto();
         treeDto.setId(tree.getId());
         treeDto.setName(tree.getName());
-        treeDto.setOwner(PlayerUtil.createResponseDto(tree.getOwner()));
-        treeDto.setLeaves(tree.getLeaves());                                    //TODO: Wenn man die map will net kompletten Baum übergeben
-        treeDto.setLeavesProduction(tree.getLeavesProduction());
+        //treeDto.setPosition(tree.getTile().getPosition());
+
+        //Long ownerId = tree.getOwner().getId();
+        Long ownerId = null;
+        treeDto.setOwnerId(ownerId);
+        //treeDto.setOwnerName(tree.getOwner().getUser().getUsername());
+
+        if (playerId.equals(ownerId)) {
+            treeDto.setLeaves(tree.getLeaves());
+            treeDto.setLeafProduction(tree.getLeavesProduction());
+            treeDto.setTrunk(tree.getTrunk());
+            treeDto.setBark(tree.getBark());
+            treeDto.setBranches(tree.getBranches());
+            treeDto.setRoot(tree.getRoot());
+        }
         return treeDto;
     }
 }

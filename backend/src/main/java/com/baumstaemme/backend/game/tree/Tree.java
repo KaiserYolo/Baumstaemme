@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
 import java.util.List;
 
 
@@ -27,9 +28,13 @@ public class Tree {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name = "owner_id")
     @JsonBackReference
     private Player owner;
+
+    //@OneToOne(cascade = CascadeType.ALL)
+    //@JoinColumn(name = "tile_id")
+    //private Tile tile;
 
     // Resources
     private int leaves = 1000;

@@ -24,6 +24,6 @@ public class Tile {
     @Enumerated(EnumType.STRING)
     private TileType type;
 
-    @OneToOne
+    @OneToOne//(mappedBy = "tile", cascade = CascadeType.ALL)
     private Tree tree;
 }

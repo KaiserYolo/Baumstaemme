@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/upgrade")
+@RequestMapping("/api/upgrades")
 public class UpgradeController {
 
     private final UpgradeService upgradeService;
