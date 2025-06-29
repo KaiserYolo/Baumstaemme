@@ -12,10 +12,13 @@ public class TileDto {
 
     private Long id;
     private Point position;
-
     private TileType type;
 
-    private Boolean ownership;
+    private OwnerType ownership;
 
-    private TreeDto tree;
+    public enum OwnerType {
+        IS_OWNER,
+        NOT_OWNER,
+        NO_OWNER
+    }
 }

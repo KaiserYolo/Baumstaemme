@@ -43,7 +43,7 @@ public class UpgradeService {
 
     public Upgrade queueUpgrade(long treeId, UpgradeType building) {
 
-        Tree tree = treeService.getTree(treeId);
+        Tree tree = treeService.findById(treeId);
 
         List<Upgrade> sameTypeUpgrades = getUpgrades(tree)
                 .stream()

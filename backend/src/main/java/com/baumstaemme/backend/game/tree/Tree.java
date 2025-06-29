@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
 import java.util.List;
 
 
@@ -27,9 +28,10 @@ public class Tree {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "player_id")
-    @JsonBackReference
+    @JoinColumn(name = "owner_id")
     private Player owner;
+
+    private Point position;
 
     // Resources
     private int leaves = 1000;

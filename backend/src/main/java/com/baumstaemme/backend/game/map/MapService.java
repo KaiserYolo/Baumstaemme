@@ -4,6 +4,7 @@ import com.baumstaemme.backend.game.tile.Tile;
 import com.baumstaemme.backend.game.tile.TileService;
 import com.baumstaemme.backend.game.tile.TileType;
 import com.baumstaemme.backend.game.tree.Tree;
+import com.baumstaemme.backend.game.tree.TreeService;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -18,10 +19,12 @@ public class MapService {
 
     private final MapRepo mapRepo;
     private final TileService tileService;
+    private final TreeService treeService;
 
-    MapService(MapRepo mapRepo, TileService tileService) {
+    MapService(MapRepo mapRepo, TileService tileService, TreeService treeService) {
         this.mapRepo = mapRepo;
         this.tileService = tileService;
+        this.treeService = treeService;
     }
 
     public Map createMap(int mapSize) {
@@ -44,11 +47,11 @@ public class MapService {
         List<Tile> tiles = new ArrayList<>();
 
         for (Point coord : coords) {
-            Tile tile = tileService.create(coord);
+            Tile tile = tileService.create(coord); //TODO
+
             tiles.add(tile);
         }
         map.setTiles(tiles);
-
         return saveMap(map);
     }
 

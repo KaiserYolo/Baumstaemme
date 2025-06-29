@@ -57,7 +57,7 @@ public class GameController {
     }
 
     @PutMapping("/{id}/join")
-    public ResponseEntity<?> joinGame(@PathVariable Long id, HttpSession session) {     //TODO: Tree dem Spieler zuweisen falls er noch keinen hat
+    public ResponseEntity<?> joinGame(@PathVariable Long id, HttpSession session) {
         User user = (User) session.getAttribute(USER_SESSION_KEY);
 
         if (gameService.findById(id) == null && user == null) {

@@ -4,6 +4,8 @@ import com.baumstaemme.backend.game.player.PlayerDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
+
 @Data
 @NoArgsConstructor
 public class TreeDto {
@@ -11,8 +13,16 @@ public class TreeDto {
     private Long id;
     private String name;
 
-    private PlayerDto owner;
+    private Point position;
+
+    private Long ownerId;
+    private String ownerName;
 
     private int leaves;
-    private int leavesProduction;
+    private int leafProduction;
+
+    private int trunk;
+    private int bark;
+    private int branches;
+    private int root;
 }

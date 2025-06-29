@@ -2,11 +2,13 @@ package com.baumstaemme.backend.game.tree;
 
 
 import com.baumstaemme.backend.game.player.Player;
+import com.baumstaemme.backend.game.tile.Tile;
 import com.baumstaemme.backend.game.upgrade.Upgrade;
 import com.baumstaemme.backend.game.upgrade.UpgradeType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 
 @Service
@@ -18,11 +20,12 @@ public class TreeService {
         this.treeRepo = treeRepo;
     }
 
-    public Tree create() {
+    public Tree create(Point position) {
         Tree tree = new Tree();
         tree.setName("Baum");
         tree.setOwner(null);
-        return saveTree(tree);
+        tree.setPosition(position);
+        return save(tree);
     }
 
     public Tree save(Tree tree) {
@@ -37,15 +40,15 @@ public class TreeService {
         return treeRepo.findAllIds();
     }
 
-    public Tree getTree(long id) {
-        return treeRepo.findById(id).get();
+    public Tree findById(long id) {
+        return treeRepo.findById(id).orElse(null);
     }
 
     public int getBuildingLevel(long id, UpgradeType building) {
         return 0;
     }
 
-    public Tree saveTree(Tree tree) { // Public???
+    public Tree saveTree(Tree tree) {
         return treeRepo.save(tree);
     }
 
@@ -61,14 +64,6 @@ public class TreeService {
         tree.setOwner(player);
         return save(tree);
     }
-
-    public Tree getFreeTree(long id) {
-        //return (Tree) treeRepo.findByOwner(null).get();             //TODO: Idk what I'm doin
-        return null;
-    }
-
-
-
 
 
     // Maybe eigener Service

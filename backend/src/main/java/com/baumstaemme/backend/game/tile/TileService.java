@@ -40,7 +40,7 @@ public class TileService {
         Tile tile = new Tile();
         tile.setPosition(coord);
         tile.setType(TileType.TREE);
-        tile.setTree(treeService.create());
+        tile.setTree(treeService.create(coord));
         return save(tile);
     }
 }

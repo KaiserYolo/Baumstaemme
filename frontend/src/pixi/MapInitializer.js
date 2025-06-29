@@ -1,6 +1,7 @@
 // src/pixi/MapInitializer.js
 import * as PIXI from 'pixi.js';
 import {getMap} from "../services/MapAPI.js";
+import {joinGameAPI} from "../services/JoinGameAPI.js";
 
 const TILE_SIZE = 64; // Konstante für die Kachelgröße
 const MAP_ID = 1;
