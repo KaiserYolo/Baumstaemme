@@ -22,11 +22,15 @@ public class TreeUtil {
         treeDto.setName(tree.getName());
         treeDto.setPosition(tree.getPosition());
 
-        Long ownerId = tree.getOwner().getId();
-        treeDto.setOwnerId(ownerId);
-        treeDto.setOwnerName(tree.getOwner().getUser().getUsername());
+        Long ownerId = null;
 
-        if (playerId.equals(ownerId)) {
+        if (tree.getOwner() != null) {
+            ownerId = tree.getOwner().getId();
+            treeDto.setOwnerId(ownerId);
+            treeDto.setOwnerName(tree.getOwner().getUser().getUsername());
+        }
+
+        if (playerId != null && playerId.equals(ownerId)) {
             treeDto.setLeaves(tree.getLeaves());
             treeDto.setLeafProduction(tree.getLeavesProduction());
             treeDto.setTrunk(tree.getTrunk());

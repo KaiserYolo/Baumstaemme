@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "map")
-public class Map {
+public class   Map {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

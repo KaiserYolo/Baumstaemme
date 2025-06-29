@@ -70,7 +70,9 @@ public class GameService {
             return null;
         }
 
-        Player player = userService.addPlayer(userId);
+        //Player player = userService.addPlayer(userId);
+        Player player = new Player();
+
         Tree tree = mapService.getFreeTree(game.getMap());
         tree.setOwner(player);
         tree = treeService.save(tree);
