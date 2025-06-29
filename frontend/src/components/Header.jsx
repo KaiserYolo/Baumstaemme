@@ -9,7 +9,7 @@ export default function Header({onLoginClick, onLogoutClick, onTitleClick, page}
                 <button className="title-button" onClick={onTitleClick}>
                     <WoodBox n={10} text="Die Baumstämme" className="header-title" />
                 </button>
-                {page === "game" ?
+                {(page === "game" || page === "selection" ) ?
                     (<button className="login-button" onClick={onLogoutClick}>
                         <WoodBox n={4} text="Logout" />
                     </button>)
