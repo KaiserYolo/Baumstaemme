@@ -41,6 +41,7 @@ public class AuthController {
             response.put("status", "Login successful");
             session.setAttribute(USER_SESSION_KEY, user);
             session.setMaxInactiveInterval(30 * MINUTES);
+            System.out.println(session.getAttribute(USER_SESSION_KEY));
             return ResponseEntity.ok(response);
         }else {
             response.put("status", "Invalid credentials");
@@ -49,7 +50,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody LoginRequestDto registerRequest) {
+    public ResponseEntity<?> register(@RequestBody LoginRequestDto registerRequest, HttpSession session) {
         System.out.println(">>> Registering User: " + registerRequest.getUsername());
 
         Map<String, String> response = new HashMap<>();
@@ -61,6 +62,8 @@ public class AuthController {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordHashUtil.hashPassword(registerRequest.getPassword()));
+        session.setAttribute(USER_SESSION_KEY, user);
+        session.setMaxInactiveInterval(30 * MINUTES);
         userRepo.save(user);
 
         response.put("status", "User registered successfully");
