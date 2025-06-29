@@ -2,6 +2,8 @@ package com.baumstaemme.backend.game.map;
 
 import com.baumstaemme.backend.game.tile.Tile;
 import com.baumstaemme.backend.game.tile.TileService;
+import com.baumstaemme.backend.game.tile.TileType;
+import com.baumstaemme.backend.game.tree.Tree;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class MapService {
@@ -49,11 +52,27 @@ public class MapService {
         return saveMap(map);
     }
 
-    Map getById(long id) {
-        return mapRepo.findById(id).get();
+    Map findById(long id) {
+        return mapRepo.findById(id).orElse(null);
     }
 
     Map saveMap(Map map) {
         return mapRepo.save(map);
+    }
+
+    public Tree getFreeTree(Map map) {
+        if (map == null) {
+            return null;
+        }
+        List<Tile> tiles = map.getTiles().stream().filter(tile -> tile.getType() == TileType.TREE).toList();
+        List<Tree> freeTrees = new ArrayList<>();
+        for (Tile tile : tiles) {
+            Tree tree = tile.getTree();
+            if (tree.getOwner() == null) {
+                freeTrees.add(tree);
+            }
+        }
+        Random rand = new Random();
+        return freeTrees.get(rand.nextInt(freeTrees.size()));
     }
 }

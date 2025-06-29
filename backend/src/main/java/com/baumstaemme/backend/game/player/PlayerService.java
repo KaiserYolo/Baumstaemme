@@ -2,8 +2,10 @@ package com.baumstaemme.backend.game.player;
 
 import com.baumstaemme.backend.game.tree.Tree;
 
+import com.baumstaemme.backend.user.User;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,9 +25,9 @@ public class PlayerService {
     }
 
 
-    public Player create(String name) {
+    public Player create(User user) {
         Player player = new Player();
-        player.setUsername(name);
+        player.setUser(user);
         return save(player);
     }
 
@@ -33,17 +35,17 @@ public class PlayerService {
         return playerRepo.findById(id).orElse(null);
     }
 
-    public boolean findTree(Long id) {
-        Player player = findById(id);
-        List<Tree> trees = player.getTrees();
-        return trees != null;
-    }
 
-    public void addTree(Long id, Tree tree){
-        Player player = findById(id);
-        List<Tree> trees = player.getTrees();
-        trees.add(tree);
-        player.setTrees(trees);
-        playerRepo.save(player);
+    public Player addTree(Player player, Tree tree){
+        if (player == null) {
+            return null;
+        }
+        if (player.getTrees() == null) {
+            player.setTrees(new ArrayList<>());
+        } else {
+            player.getTrees().add(tree);
+        }
+        tree.setOwner(player);
+        return save(player);
     }
 }

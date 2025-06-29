@@ -1,6 +1,8 @@
 package com.baumstaemme.backend.user;
 
 import com.baumstaemme.backend.game.player.Player;
+import com.baumstaemme.backend.game.player.PlayerRepo;
+import com.baumstaemme.backend.game.player.PlayerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +11,11 @@ import java.util.List;
 public class UserService {
 
     private final UserRepo userRepo;
+    private final PlayerService playerService;
 
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, PlayerService playerService) {
         this.userRepo = userRepo;
+        this.playerService = playerService;
     }
 
     public User save(User user) {
@@ -25,12 +29,18 @@ public class UserService {
         return userRepo.findById(id).orElse(null);
     }
 
-    public void addPlayer(Long id, Player player) {
+
+    public Player addPlayer(Long id) {
         User user = findById(id);
-        List<Player> players = user.getPlayers();
-        players.add(player);
-        user.setPlayers(players);
-        userRepo.save(user);
+        if (user == null) {
+            return null;
+        }
+        Player player = playerService.create(user);
+        user.getPlayers().add(player);
+
+        save(user);
+
+        return player;
     }
 
 

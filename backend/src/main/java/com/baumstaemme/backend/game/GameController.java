@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,22 +17,19 @@ import java.util.List;
 public class GameController {
 
     private final GameService gameService;
-    private final PlayerService playerService;
-    private final UserService userService;
 
     private static final String USER_SESSION_KEY = "loggedInUser";
     private static final String PLAYER_SESSION_ID_KEY = "playerSession";
 
-    public GameController(GameService gameService, PlayerService playerService, UserService userService) {
+    public GameController(GameService gameService) {
         this.gameService = gameService;
-        this.playerService = playerService;
-        this.userService = userService;
     }
 
     @GetMapping()
     public ResponseEntity<List<GameDto>> getAll() {
-        //List<Game> gameList = gameService.getAllIds();
-        return ResponseEntity.ok(null); // TODO
+        List<Game> games = gameService.getAll();
+        List<GameDto> gameDtoList = GameUtil.createResponseDto(games);
+        return ResponseEntity.ok(gameDtoList);
     }
 
     @GetMapping("/{id}")
@@ -50,7 +49,7 @@ public class GameController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/updateStatus")
+    @PutMapping("/{id}/updateStatus")
     public ResponseEntity<GameDto> updateStatus(@Valid @RequestBody GameDto gameDto) {
         Game game = gameService.updateStatus(gameDto.getId(), gameDto.getStatus());
         GameDto responseDto = GameUtil.createResponseDto(game);
@@ -60,15 +59,11 @@ public class GameController {
     @PutMapping("/{id}/join")
     public ResponseEntity<?> joinGame(@PathVariable Long id, HttpSession session) {     //TODO: Tree dem Spieler zuweisen falls er noch keinen hat
         User user = (User) session.getAttribute(USER_SESSION_KEY);
-        Player player = playerService.create(user.getUsername());
-        userService.addPlayer(user.getId(), player);
-        gameService.joinGame(id, player);
-        /*
-        if(!playerService.findTree(player.getId())){
-            playerService.addTree(player.getId(), );
-        };
 
-         */
+        if (gameService.findById(id) == null && user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        Player player = gameService.joinGame(id, user.getId());
         session.setAttribute(PLAYER_SESSION_ID_KEY, player.getId());
         return ResponseEntity.ok("Server gejoint");
     }

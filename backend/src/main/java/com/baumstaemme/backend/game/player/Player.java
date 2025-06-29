@@ -23,9 +23,8 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String username;
-
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     User user;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)

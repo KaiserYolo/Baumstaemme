@@ -1,5 +1,7 @@
 package com.baumstaemme.backend.game.player;
 
+import com.baumstaemme.backend.game.tree.Tree;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,16 +12,17 @@ public class PlayerUtil {
             return null;
         }
         PlayerDto playerDto = new PlayerDto();
-        playerDto.setId(playerDto.getId());
-        playerDto.setName(playerDto.getName());
-        return playerDto;
-    }
+        playerDto.setId(player.getId());
+        playerDto.setName(player.getUser().getUsername());
+        playerDto.setOwnerId(player.getUser().getId());
 
-    public static List<PlayerDto> toDtoList(List<Player> players) {
-        List<PlayerDto> playerDtoList = new ArrayList<>();
-        for (Player player : players) {
-            playerDtoList.add(createResponseDto(player));
+        List<Tree> trees = player.getTrees();
+        List<Long> treeIdList = new ArrayList<>();
+        for (Tree tree : trees) {
+            treeIdList.add(tree.getId());
         }
-        return playerDtoList;
+        playerDto.setTreeIdList(treeIdList);
+
+        return playerDto;
     }
 }

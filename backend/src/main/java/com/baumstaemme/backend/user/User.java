@@ -22,6 +22,6 @@ public class User {
     @NotBlank @Size(max = 20)
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Player> players;
 }

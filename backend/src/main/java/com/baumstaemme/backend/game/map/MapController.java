@@ -25,7 +25,7 @@ public class MapController {
         if (playerId == null) {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
-        Map map = mapService.getById(id);
+        Map map = mapService.findById(id);
         if (map == null) {
             return null;
         }

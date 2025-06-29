@@ -25,6 +25,14 @@ public class TreeService {
         return saveTree(tree);
     }
 
+    public Tree save(Tree tree) {
+        return treeRepo.save(tree);
+    }
+
+    public Tree findById(Long id) {
+        return treeRepo.findById(id).orElse(null);
+    }
+
     List<Long> getIds() {
         return treeRepo.findAllIds();
     }
@@ -43,6 +51,15 @@ public class TreeService {
 
     public void addUpgrade(Upgrade upgrade) {
 
+    }
+
+    public Tree setOwner(long id, Player player) {
+        Tree tree = findById(id);
+        if (tree == null) {
+            return null;
+        }
+        tree.setOwner(player);
+        return save(tree);
     }
 
     public Tree getFreeTree(long id) {
