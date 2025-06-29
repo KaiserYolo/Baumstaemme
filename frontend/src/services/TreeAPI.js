@@ -1,6 +1,6 @@
-export const getMap = async (id) => {
+export const getTree = async (id) => {
     try {
-        const url = new URL(`http://localhost:8080/api/maps/${id}`)
+        const url = new URL(`http://localhost:8080/api/trees/${id}`)
         const response = await fetch(url, {
             method: 'GET',
         })

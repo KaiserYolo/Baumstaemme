@@ -2,12 +2,12 @@
 import * as PIXI from 'pixi.js';
 import { Viewport} from "pixi-viewport";
 
-export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //getIsMenuOpen
+export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {
 
     console.log("setupPanningAndZooming: app object", app);
     console.log("setupPanningAndZooming: app.screen", app.screen);
     console.log("setupPanningAndZooming: app.renderer", app.renderer);
-    console.log("setupPanningAndZooming: app.renderer.events", app.renderer?.events); // Sicherer Zugriff
+    console.log("setupPanningAndZooming: app.renderer.events", app.renderer?.events);
 
     if (!app || !app.screen || !app.renderer || !app.renderer.events || !mapBounds || typeof mapBounds.width === 'undefined' || typeof mapBounds.height === 'undefined') {
         console.error("Ungültiges App-Objekt oder Map-Grenzen an setupPanningAndZooming übergeben. Viewport kann nicht initialisiert werden.");
@@ -31,7 +31,7 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
         .drag()
         .wheel()
         .decelerate()
-        //.pinch() mobile??
+        .pinch()
 
     viewport.clamp({
         direction: "all",
@@ -47,7 +47,7 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
         viewport.resize(window.innerWidth, window.innerHeight);
     });
 
-/*
+
     const enableInteraction = () => {
         viewport.resume();
     };
@@ -56,13 +56,5 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {   //ge
         viewport.pause();
     }
 
-    if (getIsMenuOpen()) {
-        viewport.pause();
-    } else {
-        viewport.resume();
-    }
-
- */
-
-    return { viewport };  //, enableInteraction,disableInteraction
+    return { viewport, enableInteraction, disableInteraction };  //, enableInteraction,disableInteraction
 };

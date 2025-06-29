@@ -51,13 +51,13 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         const texturePath = TILE_ASSETS[tileInfo.type.toLowerCase()];
         if (!texturePath) {
             console.warn(`No texture found for tile type: ${tileInfo.type}`);
-            return; // Skip rendering this tile if texture path is missing
+            return;
         }
 
         const tile = new PIXI.Sprite(PIXI.Assets.get(texturePath));
 
-        tile.x = tileInfo.xcoordinate*TILE_SIZE;
-        tile.y = tileInfo.ycoordinate*TILE_SIZE;
+        tile.x = tileInfo.position.x*TILE_SIZE;
+        tile.y = tileInfo.position.y*TILE_SIZE;
 
         tile.width = TILE_SIZE;
         tile.height = TILE_SIZE;
@@ -74,7 +74,7 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         tile.on('pointerup', (e) => {
             if (!tile.initialPointerDownGlobal) {
                 console.warn("pointerup fired without a preceding pointerdown for this tile. Skipping click/drag check.");
-                return; // Exit the handler early if no initial position was recorded
+                return;
             }
             const currentPointerUpGlobal = e.data.global.clone();
             const distance = Math.sqrt(
@@ -95,8 +95,8 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
         });
 
         mapContainer.addChild(tile);
-        if (tileInfo.xcoordinate*TILE_SIZE > maxX) maxX = tileInfo.xcoordinate*TILE_SIZE;
-        if (tileInfo.ycoordinate*TILE_SIZE > maxY) maxY = tileInfo.ycoordinate*TILE_SIZE;
+        if (tileInfo.position.x*TILE_SIZE > maxX) maxX = tileInfo.position.x*TILE_SIZE;
+        if (tileInfo.position.y*TILE_SIZE > maxY) maxY = tileInfo.position.y*TILE_SIZE;
     });
     const mapBounds = {
         width: maxX,
