@@ -1,7 +1,7 @@
 package com.baumstaemme.backend.game.tile;
 
 public enum TileType {
-    EMTPY,
+    EMPTY,
     TREE,
     EVENT,
     RESOURCE

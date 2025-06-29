@@ -8,13 +8,12 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "map")
+@Table(name = "MAP")
 public class   Map {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     private int size;
 
     @OneToMany

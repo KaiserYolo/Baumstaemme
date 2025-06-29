@@ -1,13 +1,10 @@
 package com.baumstaemme.backend.game.tree;
 
-import com.baumstaemme.backend.game.player.PlayerDto;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.awt.*;
 
 @Data
-@NoArgsConstructor
 public class TreeDto {
 
     private Long id;

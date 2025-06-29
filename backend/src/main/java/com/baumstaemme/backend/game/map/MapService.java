@@ -4,7 +4,6 @@ import com.baumstaemme.backend.game.tile.Tile;
 import com.baumstaemme.backend.game.tile.TileService;
 import com.baumstaemme.backend.game.tile.TileType;
 import com.baumstaemme.backend.game.tree.Tree;
-import com.baumstaemme.backend.game.tree.TreeService;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
@@ -12,19 +11,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 public class MapService {
 
     private final MapRepo mapRepo;
     private final TileService tileService;
-    private final TreeService treeService;
 
-    MapService(MapRepo mapRepo, TileService tileService, TreeService treeService) {
+    MapService(MapRepo mapRepo, TileService tileService) {
         this.mapRepo = mapRepo;
         this.tileService = tileService;
-        this.treeService = treeService;
     }
 
     public Map createMap(int mapSize) {

@@ -4,10 +4,11 @@ import com.baumstaemme.backend.game.map.MapService;
 import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.game.player.PlayerService;
 import com.baumstaemme.backend.game.tree.Tree;
-import com.baumstaemme.backend.game.tree.TreeService;
 import com.baumstaemme.backend.user.User;
 import com.baumstaemme.backend.user.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
 import java.util.Date;
 import java.util.List;
 
@@ -18,14 +19,12 @@ public class GameService {
     private final MapService mapService;
     private final UserService userService;
     private final PlayerService playerService;
-    private final TreeService treeService;
 
-    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService, TreeService treeService) {
+    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService) {
         this.gameRepo = gameRepo;
         this.mapService = mapService;
         this.userService = userService;
         this.playerService = playerService;
-        this.treeService = treeService;
     }
 
     public Game save(Game game) {
@@ -64,23 +63,32 @@ public class GameService {
         return save(game);
     }
 
+    @Transactional
     public Player joinGame(Long id, Long userId) {
         Game game = findById(id);
-        if (game == null) {
+        User user = userService.findById(userId);
+        if (game == null || user == null) {
             return null;
         }
 
-        Player player = userService.addPlayer(userId);
-        //Player player = new Player();
-        //playerService.save(player);
+
+
+        Player player = game.getPlayers().stream().findFirst().filter(p ->
+                p.getUser().getId().equals(userId)).orElse(null);
+
+        if (player != null) {
+            return player;
+        }
 
         Tree tree = mapService.getFreeTree(game.getMap());
+
+        player = new Player();
+        player.setUser(user);
+        player.setGame(game);
+
         tree.setOwner(player);
-        tree = treeService.save(tree);
-        player = playerService.addTree(player, tree);
-        game.getPlayers().add(player);
-        
-        gameRepo.save(game);
-        return player;
+        player.getTrees().add(tree);
+
+        return playerService.save(player);
     }
 }

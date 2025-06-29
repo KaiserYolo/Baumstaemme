@@ -1,12 +1,9 @@
 package com.baumstaemme.backend.game.tile;
 
-
-import com.baumstaemme.backend.game.tree.Tree;
 import com.baumstaemme.backend.game.tree.TreeService;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-
 
 @Service
 public class TileService {
@@ -23,24 +20,15 @@ public class TileService {
         return tileRepo.findById(id).orElse(null);
     }
 
-
-    public Tree getTree(Long id) {
-        Tile tile = findById(id);
-        if (tile == null) {
-            return null;
-        }
-        return tile.getTree();
-    }
-
     public Tile save(Tile tile) {
         return tileRepo.save(tile);
     }
 
-    public Tile create(Point coord) {
+    public Tile create(Point position) {
         Tile tile = new Tile();
-        tile.setPosition(coord);
+        tile.setPosition(position);
         tile.setType(TileType.TREE);
-        tile.setTree(treeService.create(coord));
+        tile.setTree(treeService.create(position));
         return save(tile);
     }
 }

@@ -3,12 +3,10 @@ package com.baumstaemme.backend.game;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class GameDto {
 
     private Long id;
@@ -19,7 +17,7 @@ public class GameDto {
 
     private Long mapId;
 
-    private List<Long> playerIdList;
+    private List<Long> playerIds;
 
     private int MapSize;
 }

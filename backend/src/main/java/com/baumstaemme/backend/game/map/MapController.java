@@ -1,6 +1,5 @@
 package com.baumstaemme.backend.game.map;
 
-
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class MapController {
         if (playerId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        //Long playerId = 1L; // Placeholder
         Map map = mapService.findById(id);
         if (map == null) {
             return null;

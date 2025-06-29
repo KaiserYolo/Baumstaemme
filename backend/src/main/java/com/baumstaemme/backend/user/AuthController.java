@@ -78,9 +78,10 @@ public class AuthController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userRepo.findAll();
-        return ResponseEntity.ok(users);
+        List<UserDto> responseDto = UserUtil.createResponseDto(users);
+        return ResponseEntity.ok(responseDto);
     }
 
 }

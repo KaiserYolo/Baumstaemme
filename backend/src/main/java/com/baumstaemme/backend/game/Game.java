@@ -4,6 +4,8 @@ import com.baumstaemme.backend.game.map.Map;
 import com.baumstaemme.backend.game.player.Player;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +24,6 @@ public class Game {
 
     @OneToOne
     private Map map;
-    @OneToMany
-    private List<Player> players;
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+    private List<Player> players = new ArrayList<>();
 }

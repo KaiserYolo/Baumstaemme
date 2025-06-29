@@ -1,6 +1,5 @@
 package com.baumstaemme.backend.game.tile;
 
-import com.baumstaemme.backend.game.tree.TreeDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

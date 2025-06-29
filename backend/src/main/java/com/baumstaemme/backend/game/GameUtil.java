@@ -18,10 +18,11 @@ public class GameUtil {
         gameDto.setStatus(game.getStatus());
         gameDto.setMapId(game.getMap().getId());
 
-        //List<Player> players = game.getPlayers(); // TODO macht Server kaputt
-        //List<Long> playerIdList = new ArrayList<>();
-        //players.forEach(player -> {playerIdList.add(player.getId());}); // Do not like this grrrrrrrrrr
-        //gameDto.setPlayerIdList(playerIdList);
+        List<Long> playerIds = new ArrayList<>();
+        for (Player player : game.getPlayers()) {
+            playerIds.add(player.getId());
+        }
+        gameDto.setPlayerIds(playerIds);
         return gameDto;
     }
 
@@ -30,9 +31,9 @@ public class GameUtil {
             return null;
         }
         List<GameDto> gameDtoList = new ArrayList<>();
-        games.forEach(game -> {
-            gameDtoList.add(GameUtil.createResponseDto(game));
-        });
+        games.forEach(game ->
+                gameDtoList.add(createResponseDto(game))
+        );
         return gameDtoList;
     }
 }

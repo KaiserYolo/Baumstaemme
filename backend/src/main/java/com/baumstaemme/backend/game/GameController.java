@@ -1,15 +1,12 @@
 package com.baumstaemme.backend.game;
 
 import com.baumstaemme.backend.game.player.Player;
-import com.baumstaemme.backend.game.player.PlayerService;
 import com.baumstaemme.backend.user.User;
-import com.baumstaemme.backend.user.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

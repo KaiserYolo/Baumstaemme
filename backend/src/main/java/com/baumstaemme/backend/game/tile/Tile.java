@@ -1,18 +1,14 @@
 package com.baumstaemme.backend.game.tile;
 
-
 import com.baumstaemme.backend.game.tree.Tree;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.awt.*;
-
 
 @Entity
 @Table(name = "TILES")
 @Data
-@NoArgsConstructor
 public class Tile {
 
     @Id

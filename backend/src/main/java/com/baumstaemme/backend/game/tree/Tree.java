@@ -1,24 +1,17 @@
-//TODO Builder
-
 package com.baumstaemme.backend.game.tree;
 
 import com.baumstaemme.backend.game.player.Player;
-import com.baumstaemme.backend.game.tile.Tile;
 import com.baumstaemme.backend.game.upgrade.Upgrade;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.awt.*;
 import java.util.List;
 
-
 @Entity
-@Table(name = "trees")
+@Table(name = "TREES")
 @Data
-@NoArgsConstructor
 public class Tree {
 
     @Id
