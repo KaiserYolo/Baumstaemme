@@ -62,8 +62,21 @@ public class TreeService {
         return upgrade;
     }
 
-    // TODO
-    private void leafProduction() {
+
+    public Tree deductResources(Long id, int cost) {
+        Tree tree = findById(id);
+        if (tree == null) {
+            return null; // TODO davor ne Exception schmeißen
+        }
+        if (tree.getLeaves() < cost) {
+            throw  new IllegalArgumentException("Not enough resources in tree " + tree.getName());
+        }
+        tree.setLeaves(tree.getLeaves() - cost);
+        return save(tree);
+    }
+
+
+    public void leafProduction() {
         List<Tree> trees = treeRepo.findAll();
 
         for (Tree tree : trees) {
@@ -72,8 +85,7 @@ public class TreeService {
         }
     }
 
-
-    private void processUpgrade() {
+    public void processUpgrade() {
         long now = System.currentTimeMillis();
         List<Tree> trees = treeRepo.findAll().stream().filter(tree -> tree.getUpgrade() != null).toList();
         for (Tree tree : trees) {
@@ -85,12 +97,5 @@ public class TreeService {
                 System.out.println("Upgrade für Tree ID: " + tree.getId() + " abgeschlossen und entfernt.");
             }
         }
-    }
-
-    @Scheduled(fixedRate = 10000)
-    @Transactional
-    public synchronized  void processGameTick() {
-        leafProduction();
-        processUpgrade();
     }
 }

@@ -4,9 +4,12 @@ import com.baumstaemme.backend.game.map.MapService;
 import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.game.player.PlayerService;
 import com.baumstaemme.backend.game.tree.Tree;
+import com.baumstaemme.backend.game.tree.TreeService;
+import com.baumstaemme.backend.game.unit.UnitService;
 import com.baumstaemme.backend.user.User;
 import com.baumstaemme.backend.user.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,12 +22,16 @@ public class GameService {
     private final MapService mapService;
     private final UserService userService;
     private final PlayerService playerService;
+    private final TreeService treeService;
+    private final UnitService unitService;
 
-    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService) {
+    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService, TreeService treeService, UnitService unitService) {
         this.gameRepo = gameRepo;
         this.mapService = mapService;
         this.userService = userService;
         this.playerService = playerService;
+        this.treeService = treeService;
+        this.unitService = unitService;
     }
 
     public Game save(Game game) {
@@ -90,5 +97,14 @@ public class GameService {
         player.getTrees().add(tree);
 
         return playerService.save(player);
+    }
+
+    @Scheduled(fixedRate = 10000)
+    @Transactional
+    public synchronized void processGameTick() {
+        treeService.leafProduction();
+        treeService.processUpgrade();
+
+        unitService.processUnitRecruitment();
     }
 }
