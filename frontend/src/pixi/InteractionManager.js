@@ -31,9 +31,10 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {
         maxScale: 1.5,
     });
 
-    window.addEventListener('resize', () => {
+    const viewportResizeHandler = () => {
         viewport.resize(window.innerWidth, window.innerHeight);
-    });
+    };
+    window.addEventListener('resize', viewportResizeHandler);
 
 
     const enableInteraction = () => {
@@ -48,5 +49,11 @@ export const setupPanningAndZooming = (app, mapContainer, mapBounds) => {
         viewport.plugins.pause('pinch');
     }
 
-    return { viewport, enableInteraction, disableInteraction };
+    const cleanupInteractionManager = () => {
+        window.removeEventListener('resize', viewportResizeHandler);
+        // You might also want to destroy the viewport here if it's not destroyed elsewhere
+        // viewport.destroy({ children: true, texture: true, baseTexture: true });
+    };
+
+    return { viewport, enableInteraction, disableInteraction, cleanupInteractionManager };
 };

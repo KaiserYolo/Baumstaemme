@@ -1,4 +1,5 @@
 export const getMap = async (id) => {
+    console.log('Getting map data', id);
     try {
         const url = new URL(`http://localhost:8080/api/maps/${id}`)
         const response = await fetch(url, {
