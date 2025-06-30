@@ -1,9 +1,14 @@
-export const upgrade = async (id, type) => {
+export const upgrade = async (id, building) => {
+    console.log(id);
+    console.log(JSON.stringify({building}));
     try {
         const url = new URL(`http://localhost:8080/api/trees/${id}/upgrade`);
         const response = await fetch(url, {
             method: 'POST',
-            body: JSON.stringify({type}),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({building}),
             credentials: "include"
         })
         if (!response.ok) {

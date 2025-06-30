@@ -24,7 +24,7 @@ export function TileMenuResourceComponent({valueName, value}) {
     )
 }
 
-export function TileMenuComponent({valueName, value, buttonFunction,width, buttonText}) {
+export function TileMenuComponent({valueName, value, buttonFunction, width, buttonText}) {
     return (
         <div className="overlay-text-with-function">
             <label className="overlay-label">
