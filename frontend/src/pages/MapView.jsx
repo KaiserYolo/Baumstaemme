@@ -37,14 +37,19 @@ const MapView = () => {
         initMap();
 
         return () => {
+            if (viewportRef.current) {
+                viewportRef.current.destroy({children: true, texture: true, baseTexture: true});
+                viewportRef.current = null;
+            }
+
             if (appRef.current) {
-                appRef.current.destroy(true, true);
+                appRef.current.destroy(true);
                 appRef.current = null;
             }
         };
     }, []);
 
-
+    /*
     useEffect(() => {
         if (viewportRef.current) {
             if (selectedTile !== null) {
@@ -55,6 +60,7 @@ const MapView = () => {
         }
     }, [selectedTile]);
 
+     */
 
 
     useEffect(() => {
@@ -72,7 +78,7 @@ const MapView = () => {
     }, []);
 
     return (
-        <div className="map-wrapper">
+        <div className="Map">
             {selectedTile && <TileMenu
                 tileId = {{id: selectedTile.id}}
                 onClose={() => setSelectedTile(null)}
