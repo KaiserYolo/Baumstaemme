@@ -1,39 +1,39 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import WoodBox from "./WoodBox.jsx";
 import '../App.css';
 import {TileMenuComponent, TileMenuResourceComponent, TileMenuTitleComponent} from "./TileMenuComponent.jsx";
 import {getTree} from "../services/TreeAPI.js";
 
 const TileMenu = ({ tileId, onClose }) => {
-    let id = tileId.id
-    let treeData
-    try{
-        treeData  =  getTree(id);
-        console.log(treeData);
-        // eslint-disable-next-line no-unused-vars
-    }catch (error) {
-        treeData = null;
-    }
-    console.log(treeData);
-    if (!treeData){
-        treeData = {
-            "id": 17,
-            "name": "Baum",
-            "position": {
-                "x": 65.0,
-                "y": 92.0
-            },
-            "ownerId": null,
-            "ownerName": null,
-            "leaves": 0,
-            "leafProduction": 0,
-            "trunk": 0,
-            "bark": 0,
-            "branches": 0,
-            "root": 0,
-            "upgrade":null
+    const [treeData, setTreeData] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchTreeData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const data = await getTree(tileId.id);
+                setTreeData(data);
+            } catch (err) {
+                console.error("Failed to fetch tree data:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (tileId && tileId.id) {
+            fetchTreeData();
         }
-        //throw new Error("No tile data found");
+    }, [tileId, tileId.id]);
+
+    if (loading) {
+        return <div className="overlay">Loading tree data...</div>;
+    }
+
+    if (error && !treeData) {
+        return <div className="overlay">Error loading tree data. Please try again.</div>;
     }
 
     return (
