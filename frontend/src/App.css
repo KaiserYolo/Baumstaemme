@@ -75,7 +75,7 @@ html, body {
     display: flex;
     left: 50%;
     top: 50%;
-    width: 70%;
+    width: 85%;
     height: 50%;
     justify-content: center;
     justify-items: center;
@@ -92,7 +92,7 @@ html, body {
     left: 50%;
     top: 50%;
     width: 70%;
-    height: 90%;
+    height: 80%;
     align-items: center;
     box-sizing: border-box;
     text-align: center;
