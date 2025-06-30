@@ -68,11 +68,18 @@ const TileMenu = ({ tileId, onClose }) => {
                 </div>}
 
             </div>
+            <div className="overlay-upgrade-info">
+                {treeData.dtoType === "PRIVATE" && treeData.upgrade && treeData.upgrade.building !== null &&<div className="overlay-upgrade">
+                    <TileMenuResourceComponent valueName={"upgrade"} value={treeData.upgrade.building}/>
+                    <TileMenuResourceComponent valueName={"finished at"} value={new Date(treeData.upgrade.endTime).toLocaleString()}/>
+                </div>}
+
+            </div>
             <div className="overlay-section">
-                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Trunk"} value={treeData.trunk} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[0].building)} width={7} buttonText={`Upgrade: ${treeData.upgradeInfo[0].cost}`}/>}
-                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Bark"} value={treeData.bark} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[1].building)} width={7} buttonText={`Upgrade: ${treeData.upgradeInfo[1].cost}`}/>}
-                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Branches"} value={treeData.branches} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[2].building)} width={7} buttonText={`Upgrade: ${treeData.upgradeInfo[2].cost}`}/>}
-                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Root"} value={treeData.root} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[3].building)} width={7} buttonText={`Upgrade: ${treeData.upgradeInfo[3].cost}`}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Trunk"} value={treeData.trunk} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[0].building)} width={8} buttonText={`Upgrade: ${treeData.upgradeInfo[0].cost}`}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Bark"} value={treeData.bark} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[1].building)} width={8} buttonText={`Upgrade: ${treeData.upgradeInfo[1].cost}`}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Branches"} value={treeData.branches} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[2].building)} width={8} buttonText={`Upgrade: ${treeData.upgradeInfo[2].cost}`}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Root"} value={treeData.root} buttonFunction={() =>upgradeTree(treeData.id, treeData.upgradeInfo[3].building)} width={8} buttonText={`Upgrade: ${treeData.upgradeInfo[3].cost}`}/>}
                 {treeData.dtoType === "PUBLIC" && <TileMenuComponent valueName={"Enemy troops"} value={0} buttonFunction={null} width={5} buttonText={`Attack`}/>}
             </div>
             <div className="overlay-section">
