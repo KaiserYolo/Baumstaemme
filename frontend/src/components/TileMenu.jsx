@@ -5,8 +5,9 @@ import {TileMenuComponent, TileMenuResourceComponent, TileMenuTitleComponent} fr
 import {getTree} from "../services/TreeAPI.js";
 
 const TileMenu = ({ tileId, onClose }) => {
+    console.log("TileMenu rendering, tileId:", tileId); // Add this line
     const [treeData, setTreeData] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -15,18 +16,18 @@ const TileMenu = ({ tileId, onClose }) => {
             setError(null);
             try {
                 const data = await getTree(tileId.id);
+                console.log(data);
                 setTreeData(data);
             } catch (err) {
                 console.error("Failed to fetch tree data:", err);
+                setError(err);
             } finally {
                 setLoading(false);
             }
         };
 
-        if (tileId && tileId.id) {
             fetchTreeData();
-        }
-    }, [tileId, tileId.id]);
+    }, [tileId]);
 
     if (loading) {
         return <div className="overlay">Loading tree data...</div>;

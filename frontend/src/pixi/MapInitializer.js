@@ -32,7 +32,6 @@ export const setupMapContainers = (app) => {
 };
 
 export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
-    setTimeout(() => {console.log("Penis")},1);
     await joinGameAPI(1);
     const backendData = await getMap(MAP_ID);
 

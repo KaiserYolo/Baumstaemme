@@ -8,7 +8,7 @@ export const getTree = async (id) => {
             throw new Error(response.statusText);
         }
         const json = await response.json()
-        console.log(json);
+        console.log("Ich bin ein Baum in der Tree API" +json);
         return json;
     } catch (error) {
         console.log(error);

@@ -20,7 +20,6 @@ public class AuthController {
     private final AuthUtil authUtil;
 
     private static final String USER_SESSION_KEY = "loggedInUser";
-    private static final int MINUTES = 60;
 
     public AuthController(UserRepo userRepo, PasswordHashUtil passwordHashUtil, AuthUtil authUtil) {
         this.userRepo = userRepo;
@@ -39,7 +38,7 @@ public class AuthController {
         if (userOptional.isPresent() && authUtil.checkPassword(userOptional.get(), loginRequestDto.getPassword())) {
             User user = userOptional.get();
             response.put("status", "Login successful");
-            session.setAttribute(USER_SESSION_KEY, user);
+            session.setAttribute(USER_SESSION_KEY, user.getId());
             System.out.println(session.getAttribute(USER_SESSION_KEY));
             return ResponseEntity.ok(response);
         }else {
@@ -64,7 +63,7 @@ public class AuthController {
         userRepo.save(user);
         Optional<User> optinalSessionUser = userRepo.findByUsername(registerRequest.getUsername());
         User sessionUser = optinalSessionUser.get();
-        session.setAttribute(USER_SESSION_KEY,sessionUser);
+        session.setAttribute(USER_SESSION_KEY,sessionUser.getId());
         System.out.println(session.getAttribute(USER_SESSION_KEY));
         System.out.println(session);
 
@@ -74,7 +73,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
-        System.out.println(">>> Logout User: " + session.getId());
+        System.out.println(">>> Logout User: " + session);
         session.invalidate();
         return ResponseEntity.ok("Logout successful");
     }
