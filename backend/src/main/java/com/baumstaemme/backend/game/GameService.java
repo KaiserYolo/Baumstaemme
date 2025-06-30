@@ -2,93 +2,94 @@ package com.baumstaemme.backend.game;
 
 import com.baumstaemme.backend.game.map.MapService;
 import com.baumstaemme.backend.game.player.Player;
-import com.baumstaemme.backend.game.player.PlayerService;
+import com.baumstaemme.backend.game.player.PlayerRepo;
 import com.baumstaemme.backend.game.tree.Tree;
 import com.baumstaemme.backend.user.User;
 import com.baumstaemme.backend.user.UserService;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GameService {
 
     private final GameRepo gameRepo;
+    private final PlayerRepo playerRepo;
     private final MapService mapService;
     private final UserService userService;
-    private final PlayerService playerService;
 
-    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService) {
+    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerRepo playerRepo) {
         this.gameRepo = gameRepo;
         this.mapService = mapService;
         this.userService = userService;
-        this.playerService = playerService;
+        this.playerRepo = playerRepo;
     }
 
-    public Game save(Game game) {
+    public Game findById(Long id) {
+        return gameRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Game with id " + id + " not found."));
+    }
+
+    public Boolean existsByName(String name) {
+        return gameRepo.existsByName(name);
+    }
+
+    public List<Game> findAll() {
+        return gameRepo.findAll();
+    }
+
+    public Game saveGame(Game game) {
         if (game == null) {
-            return null;
+            throw new IllegalArgumentException("Game cannot be null.");
         }
         return gameRepo.save(game);
     }
 
-    public void delete(Long id) {
-        if (id != null) {
-            gameRepo.deleteById(id);
+    public Game create(String name, int mapSize) {
+        if (existsByName(name)) {
+            throw new EntityExistsException("Game with name " + name + " already exists.");
         }
-    }
-
-    public Game create(GameDto gameDto) {
         Game game = new Game();
-        game.setName(gameDto.getName());
-        game.setCreated(new Date());
+        game.setName(name);
         game.setStatus(GameStatus.CREATED);
-        game.setMap(mapService.createMap(gameDto.getMapSize()));
-        return save(game);
-    }
-
-    public Game findById(Long id) {
-        return gameRepo.findById(id).orElse(null);
-    }
-
-    public List<Game> getAll() {
-        return gameRepo.findAll();
+        game.setMap(mapService.createMap(mapSize));
+        game.setPlayers(new ArrayList<>());
+        return saveGame(game);
     }
 
     public Game updateStatus(Long id, GameStatus status) {
         Game game = findById(id);
         game.setStatus(status);
-        return save(game);
+        return saveGame(game);
     }
 
     @Transactional
     public Player joinGame(Long id, Long userId) {
         Game game = findById(id);
         User user = userService.findById(userId);
-        if (game == null || user == null) {
-            return null;
-        }
 
-
-
-        Player player = game.getPlayers().stream().findFirst().filter(p ->
-                p.getUser().getId().equals(userId)).orElse(null);
-
-        if (player != null) {
-            return player;
+        Optional<Player> existingPlayer = game.getPlayers().stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+        if (existingPlayer.isPresent()) {
+            return existingPlayer.get();
         }
 
         Tree tree = mapService.getFreeTree(game.getMap());
 
-        player = new Player();
+        // Player Erstellung ist hier angenehmer
+        Player player = new Player();
         player.setUser(user);
         player.setGame(game);
-
-        tree.setOwner(player);
         player.getTrees().add(tree);
 
-        return playerService.save(player);
+        game.getPlayers().add(player);
+        tree.setOwner(player);
+
+        return playerRepo.save(player);
     }
 }
