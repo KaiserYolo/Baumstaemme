@@ -1,4 +1,5 @@
 export const joinGameAPI = async (gameId) => {
+    console.log(gameId);
     try{
         const url = new URL(`http://localhost:8080/api/games/${gameId}/join`);
         const response = await fetch(url, {

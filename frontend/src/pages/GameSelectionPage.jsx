@@ -19,6 +19,7 @@ export default function GameSelectionPage({onGameSelection}) {
             setLoading(true);
             setError(null);
             try{
+                console.log("useEffect started")
                 const data = await getAllGames();
                 setGameList(data);
             }
@@ -29,10 +30,38 @@ export default function GameSelectionPage({onGameSelection}) {
                 setLoading(false);
             }
         }
-            if(gameList == []){
+
                 getGames();
+
+    }, []);
+
+    const createGame = async () => {
+        if (gameName !== "" && gameName !== null && mapSize !== "") {
+            setNameError("");
+            try{
+                setSelectedId(await createGameAPI(gameName, mapSize));
+                await joinGame()
             }
-    });
+            catch(err){
+                console.error("Error creating game", err);
+            }
+        }
+        else{
+            setNameError("Something went wrong!");
+        }
+    }
+
+    const joinGame = async () => {
+        if(selectedId !== ""){
+            try{
+                await joinGameAPI(selectedId);
+                console.log("JoinGameAPI was successful");
+                    onGameSelection();
+            }catch(err){
+                console.error("Error creating game", err);
+            }
+        }
+    }
 
     if(loading){
         return(
@@ -54,7 +83,7 @@ export default function GameSelectionPage({onGameSelection}) {
                                 <input id="mapsize" onChange={e => setMapSize(e.target.value)} value={mapSize} type="number" placeholder="Set map size" required={true} min={10} max={500}/>
                             </div>
                         </div>
-                        <button className="join-button" type="submit" onClick={createGame}>
+                        <button className="join-button" type="button" onClick={createGame}>
                             <WoodBox n={8} text="Create Game" />
                         </button>
                     </form>
@@ -65,7 +94,7 @@ export default function GameSelectionPage({onGameSelection}) {
                         <div className="game-selection-game-list">
                             Loaging Games...
                         </div>
-                        <button className="join-button" type="submit" onClick={joinGame}>
+                        <button className="join-button" type="button" onClick={joinGame}>
                             <WoodBox n={8} text="Join Game" />
                         </button>
                     </form>
@@ -94,7 +123,7 @@ export default function GameSelectionPage({onGameSelection}) {
                                 <input id="mapsize" onChange={e => setMapSize(e.target.value)} value={mapSize} type="number" placeholder="Set map size" required={true} min={10} max={500}/>
                             </div>
                         </div>
-                        <button className="join-button" type="submit" onClick={createGame}>
+                        <button className="join-button" type="button" onClick={createGame}>
                             <WoodBox n={8} text="Create Game" />
                         </button>
                     </form>
@@ -106,42 +135,13 @@ export default function GameSelectionPage({onGameSelection}) {
                             An error occured loading the games...
                             Please try again!
                         </div>
-                        <button className="join-button" type="submit" onClick={joinGame}>
+                        <button className="join-button" type="button" onClick={joinGame}>
                             <WoodBox n={8} text="Join Game" />
                         </button>
                     </form>
                 </div>
             </div>
         );
-    }
-
-    const createGame = async () => {
-        if (gameName !== "" && gameName !== null && mapSize !== "" && gameName !== "") {
-            setNameError("");
-            try{
-                setSelectedId(await createGameAPI(gameName, mapSize));
-                await joinGame()
-            }
-            catch(err){
-                console.error("Error creating game", err);
-            }
-        }
-        else{
-            setNameError("Something went wrong!");
-        }
-    }
-
-    const joinGame = async () => {
-            if(selectedId !== ""){
-                try{
-                    const status = await joinGameAPI(selectedId);
-                    if(status === 200){
-                        onGameSelection();
-                    }
-                }catch(err){
-                    console.error("Error creating game", err);
-                }
-            }
     }
 
     return (
@@ -163,7 +163,7 @@ export default function GameSelectionPage({onGameSelection}) {
                             <input id="mapsize" onChange={e => setMapSize(e.target.value)} value={mapSize} type="number" placeholder="Set map size" required={true} min={10} max={500}/>
                         </div>
                     </div>
-                    <button className="join-button" type="submit" onClick={createGame}>
+                    <button className="join-button" type="button" onClick={createGame}>
                         <WoodBox n={8} text="Create Game" />
                     </button>
                 </form>
@@ -200,7 +200,7 @@ export default function GameSelectionPage({onGameSelection}) {
                             </div>
                         ))}
                     </div>
-                    <button className="join-button" type="submit" onClick={joinGame}>
+                    <button className="join-button" type="button" onClick={joinGame}>
                         <WoodBox n={8} text="Join Game" />
                     </button>
                 </form>
