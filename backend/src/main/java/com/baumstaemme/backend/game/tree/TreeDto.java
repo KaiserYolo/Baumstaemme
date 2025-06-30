@@ -16,6 +16,8 @@ public class TreeDto {
     private Long ownerId;
     private String ownerName;
 
+    private DtoType dtoType;
+
     private int leaves;
     private int leafProduction;
 
@@ -25,4 +27,10 @@ public class TreeDto {
     private int root;
 
     private UpgradeDto upgrade;
+
+
+    public enum DtoType {
+        PUBLIC,
+        PRIVATE
+    }
 }

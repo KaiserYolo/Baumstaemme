@@ -33,8 +33,10 @@ public class TreeUtil {
             treeDto.setOwnerId(ownerId);
             treeDto.setOwnerName(tree.getOwner().getUser().getUsername());
         }
+        treeDto.setDtoType(TreeDto.DtoType.PUBLIC);
 
         if (playerId != null && playerId.equals(ownerId)) {
+            treeDto.setDtoType(TreeDto.DtoType.PRIVATE);
             treeDto.setLeaves(tree.getLeaves());
             treeDto.setLeafProduction(tree.getLeavesProduction());
             treeDto.setTrunk(tree.getTrunk());
