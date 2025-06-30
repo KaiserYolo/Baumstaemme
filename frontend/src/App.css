@@ -69,6 +69,66 @@ html, body {
     overflow: hidden;
 }
 
+/*LandingPage.jsx*/
+
+.intro-text {
+    display: flex;
+    left: 50%;
+    top: 50%;
+    width: 70%;
+    height: 50%;
+    justify-content: center;
+    justify-items: center;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 2rem;
+    font-family: 'CinzelDecorative', cursive;
+    color: #F0EAD6;
+}
+
+.update-table{
+    display: flex;
+    flex-direction: column;
+    left: 50%;
+    top: 50%;
+    width: 70%;
+    height: 90%;
+    align-items: center;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'CinzelDecorative', cursive;
+    background-color: #4C6B2C;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    gap: 0.5rem;
+}
+
+.update-element {
+    display: flex;
+    flex-direction: column;
+    height: 3.5rem;
+    width: 70%;
+    justify-content: center;
+    justify-items: center;
+    box-sizing: border-box;
+    border: 2px solid #2E3921;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #F0EAD6;
+    padding: 0;
+}
+
+.update-element-title {
+    font-family: 'CinzelDecorative', cursive;
+    font-size: 1.5rem;
+}
+
+.update-element-subtitle {
+    font-family: 'CrimsonPro', cursive;
+    color: #D65F5F;
+    font-size: 1rem;
+}
+
 /*Footer.jsx*/
 .footer {
     background-color: #3E2B23;
