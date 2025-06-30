@@ -17,24 +17,21 @@ const TileMenu = ({ tileId, onClose }) => {
     console.log(treeData);
     if (!treeData){
         treeData = {
-            "id": 1,
-            "size": 20,
-            "tiles": [
-                {
-                    "id": 20,
-                    "position": {
-                        "x": 0.0,
-                        "y": 10.0
-                    },
-                    "type": "TREE",
-                    "tree": {
-                        "id": 20,
-                        "name": "Baum",
-                        "ownerName": null,
-                        "leaves": 1210,
-                        "leavesProduction": 10
-                    }
-                }]
+            "id": 17,
+            "name": "Baum",
+            "position": {
+                "x": 65.0,
+                "y": 92.0
+            },
+            "ownerId": null,
+            "ownerName": null,
+            "leaves": 0,
+            "leafProduction": 0,
+            "trunk": 0,
+            "bark": 0,
+            "branches": 0,
+            "root": 0,
+            "upgrade":null
         }
         //throw new Error("No tile data found");
     }
@@ -53,7 +50,10 @@ const TileMenu = ({ tileId, onClose }) => {
                 </div>
             </div>
             <div className="overlay-section">
-                <TileMenuComponent valueName={"Leaves production"} value={treeData.leavesProduction} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
+                <TileMenuComponent valueName={"Trunk"} value={treeData.trunk} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
+                <TileMenuComponent valueName={"Bark"} value={treeData.bark} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
+                <TileMenuComponent valueName={"Branches"} value={treeData.branches} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
+                <TileMenuComponent valueName={"Root"} value={treeData.root} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
             </div>
             <div className="overlay-section">
                 <button className="test-button" onClick={onClose}>
