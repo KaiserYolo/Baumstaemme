@@ -27,7 +27,7 @@ public class MapService {
         Map map = new Map();
         map.setSize(mapSize);
 
-        int maxTrees = 20;
+        int maxTrees = mapSize*mapSize/10;
 
         Random random = new Random();
         HashSet<Point> coords = new HashSet<>();
