@@ -41,14 +41,21 @@ const TileMenu = ({ tileId, onClose }) => {
         <div className="overlay">
             <div className="overlay-section">
                 <TileMenuTitleComponent name={treeData.name} isTitle="true"/>
-                <TileMenuTitleComponent name={`Owner: ${treeData.ownerName}`}/>
+                {(treeData.ownerName === null) ? (
+                        <TileMenuTitleComponent name={`unclaimed`}/>
+                    )
+                :
+                    (
+                        <TileMenuTitleComponent name={`Owner: ${treeData.ownerName}`}/>
+                    )}
+
                 <TileMenuTitleComponent name={`x: ${treeData.position.x}, y: ${treeData.position.y}`}/>
             </div>
             <div className="overlay-resource-info">
-                <div className="overlay-resource">
-                    <TileMenuResourceComponent valueName={"leaves"} value={treeData.leaves}/>
-                    <TileMenuResourceComponent valueName={"troops"} value={580}/>
-                </div>
+                    <div className="overlay-resource">
+                        <TileMenuResourceComponent valueName={"leaves"} value={treeData.leaves}/>
+                        <TileMenuResourceComponent valueName={"troops"} value={"soon..."}/>
+                    </div>
             </div>
             <div className="overlay-section">
                 <TileMenuComponent valueName={"Trunk"} value={treeData.trunk} buttonFunction={null} width={5} buttonText={"Upgrade"}/>

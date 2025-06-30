@@ -19,7 +19,6 @@ export default function GameSelectionPage({onGameSelection}) {
             setLoading(true);
             setError(null);
             try{
-                console.log("useEffect started")
                 const data = await getAllGames();
                 setGameList(data);
             }
@@ -30,16 +29,29 @@ export default function GameSelectionPage({onGameSelection}) {
                 setLoading(false);
             }
         }
-
                 getGames();
-
     }, []);
+
+    const joinGame = async () => {
+        if(selectedId !== ""){
+            try{
+                console.log("JoinGameAPI started");
+                await joinGameAPI(selectedId);
+                console.log("JoinGameAPI was successful");
+                onGameSelection();
+            }catch(err){
+                console.error("Error creating game", err);
+            }
+        }
+    }
 
     const createGame = async () => {
         if (gameName !== "" && gameName !== null && mapSize !== "") {
             setNameError("");
             try{
-                setSelectedId(await createGameAPI(gameName, mapSize));
+                const returnJson = await createGameAPI(gameName, mapSize);
+                console.log("create was successful ",returnJson);
+                setSelectedId(returnJson.id);
                 await joinGame()
             }
             catch(err){
@@ -48,18 +60,6 @@ export default function GameSelectionPage({onGameSelection}) {
         }
         else{
             setNameError("Something went wrong!");
-        }
-    }
-
-    const joinGame = async () => {
-        if(selectedId !== ""){
-            try{
-                await joinGameAPI(selectedId);
-                console.log("JoinGameAPI was successful");
-                    onGameSelection();
-            }catch(err){
-                console.error("Error creating game", err);
-            }
         }
     }
 
