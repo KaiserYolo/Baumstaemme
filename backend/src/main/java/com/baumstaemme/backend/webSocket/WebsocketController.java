@@ -7,11 +7,13 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class WebsocketController {
-
+/*
     @MessageMapping("/send")
     @SendTo("/topic/messages")
     public WebSocketDto sendMessage(@Payload WebSocketDto message) {
 
         return message;
     }
+
+ */
 }
