@@ -15,11 +15,13 @@ public class Tile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Point position;
+    @Column(nullable = false)
+    private Point position; // ist des überhaupt sinnvoll?
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TileType type;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Tree tree;
 }

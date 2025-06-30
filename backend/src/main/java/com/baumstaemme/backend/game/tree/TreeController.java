@@ -1,10 +1,11 @@
 package com.baumstaemme.backend.game.tree;
 
+import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.game.upgrade.Upgrade;
 import com.baumstaemme.backend.game.upgrade.UpgradeDto;
-import com.baumstaemme.backend.game.upgrade.UpgradeType;
 import com.baumstaemme.backend.game.upgrade.UpgradeUtil;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,11 +25,7 @@ public class TreeController {
     @GetMapping("/{id}")
     public ResponseEntity<TreeDto> getTree(@PathVariable Long id, HttpSession session) {
         Long playerId = (Long) session.getAttribute(PLAYER_SESSION_ID_KEY);
-
         Tree tree = treeService.findById(id);
-        if (tree == null) {
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(TreeUtil.createResponseDto(tree, playerId));
     }
 
@@ -36,9 +33,13 @@ public class TreeController {
     public ResponseEntity<UpgradeDto> upgrade(@PathVariable Long id, @RequestBody UpgradeDto requestDto, HttpSession session) {
         Long playerId = (Long) session.getAttribute(PLAYER_SESSION_ID_KEY);
         Tree tree = treeService.findById(id);
-        if (tree == null || !playerId.equals(tree.getOwner().getId())) {
-            return ResponseEntity.notFound().build();
+
+        Player owner = tree.getOwner();
+
+        if (owner == null || !owner.getId().equals(playerId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         Upgrade upgrade = treeService.addUpgrade(tree, requestDto.getBuilding());
         UpgradeDto responseDto = UpgradeUtil.createResponseDto(upgrade);
         return ResponseEntity.ok(responseDto);

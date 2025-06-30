@@ -11,7 +11,7 @@ import java.util.List;
 public class TreeUtil {
 
 
-    public static List<UpgradeDto> createUpgradeInfoDto(Tree tree) { //TODO ist echt schlecht, sollte generell ein Building Entity erstellen
+    public static List<UpgradeDto> createUpgradeInfoDto(Tree tree) { //TODO: Funktion ist echt schlecht, sollte generell ein Building Entity erstellen
         if (tree == null) {
             return null;
         }

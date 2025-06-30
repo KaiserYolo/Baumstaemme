@@ -32,7 +32,6 @@ public class TreeDto {
 
     private UpgradeDto upgrade;
 
-
     public enum DtoType {
         PUBLIC,
         PRIVATE
