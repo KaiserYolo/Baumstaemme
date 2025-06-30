@@ -11,7 +11,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,13 +56,6 @@ public class GameService {
         game.setName(name);
         game.setStatus(GameStatus.CREATED);
         game.setMap(mapService.createMap(mapSize));
-        game.setPlayers(new ArrayList<>());
-        return saveGame(game);
-    }
-
-    public Game updateStatus(Long id, GameStatus status) {
-        Game game = findById(id);
-        game.setStatus(status);
         return saveGame(game);
     }
 

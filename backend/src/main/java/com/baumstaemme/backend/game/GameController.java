@@ -47,13 +47,6 @@ public class GameController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping("/{gameId}/updateStatus")
-    public ResponseEntity<GameDto> updateStatus(@PathVariable Long gameId, @Valid @RequestBody GameDto gameDto) {
-        Game game = gameService.updateStatus(gameId, gameDto.getStatus());
-        GameDto responseDto = GameUtil.createResponseDto(game);
-        return ResponseEntity.ok(responseDto);
-    }
-
     @PutMapping("/{gameId}/join")
     public ResponseEntity<String> joinGame(@PathVariable Long gameId, HttpSession session) {
         log.info("Attempting to join game {}. Session ID: {}", gameId, session.getId());
