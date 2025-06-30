@@ -20,8 +20,7 @@ export default function Form({onLogin}){
         if(buttonId === "login"){
             try{
                 console.log("login attempt");
-                const user = await loginUser({username, password});
-                console.log(user);
+                await loginUser({username, password});
                 onLogin();
             }
             catch{
@@ -32,7 +31,7 @@ export default function Form({onLogin}){
         else if(buttonId === "register"){
             try{
                 console.log("register attempt");
-                const user = await registerUser({username, password});
+                await registerUser({username, password});
                 onLogin();
             }
             catch{
