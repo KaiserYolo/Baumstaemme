@@ -34,8 +34,14 @@ export default function GameSelectionPage({onGameSelection}) {
         getGames();
     }, []);
 
-    const joinGame = async (id = selectedId) => {
-        if(id !== ""){
+    useEffect(() => {
+        if (selectedId) {
+            joinGame();
+        }
+    }, [selectedId]);
+
+    const joinGame = async () => {
+        if(selectedId !== ""){
             try{
                 console.log("JoinGameAPI started");
                 await joinGameAPI(selectedId);
@@ -55,11 +61,11 @@ export default function GameSelectionPage({onGameSelection}) {
                 console.log("create was successful ",returnJson);
                 await getGames();
                 setSelectedId(returnJson.id);
-                console.log("selectedId ", selectedId);
-                await joinGame(returnJson.id);
+                console.log("selectedId set to ", returnJson.id);
             }
             catch(err){
                 console.error("Error creating game", err);
+                setNameError("Fehler beim erstellen des Spiels")
             }
         }
         else{
