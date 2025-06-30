@@ -4,9 +4,10 @@ import com.baumstaemme.backend.game.map.Map;
 import com.baumstaemme.backend.game.player.Player;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,13 +18,19 @@ public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true)
     private String name;
-    private Date created;
+
+    @CreationTimestamp
+    private LocalDateTime created;
+
     @Enumerated(EnumType.STRING)
     private GameStatus status;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Map map;
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> players = new ArrayList<>();
 }

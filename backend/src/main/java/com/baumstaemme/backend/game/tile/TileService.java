@@ -16,10 +16,6 @@ public class TileService {
         this.treeService = treeService;
     }
 
-    public Tile findById(Long id){
-        return tileRepo.findById(id).orElse(null);
-    }
-
     public Tile save(Tile tile) {
         return tileRepo.save(tile);
     }

@@ -3,6 +3,7 @@ package com.baumstaemme.backend.game.tree;
 import com.baumstaemme.backend.game.upgrade.Upgrade;
 import com.baumstaemme.backend.game.upgrade.UpgradeService;
 import com.baumstaemme.backend.game.upgrade.UpgradeType;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,13 +35,10 @@ public class TreeService {
     }
 
     public Tree findById(Long id) {
-        return treeRepo.findById(id).orElse(null);
+        return treeRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Tree with id " + id + " not found."));
     }
 
     public Upgrade addUpgrade(Tree tree, UpgradeType upgradeType) {
-        if (tree == null || tree.getUpgrade() != null || upgradeType == null) {
-            return null;
-        }
         int currentLevel = tree.getBuildingLevel(upgradeType);
         Upgrade upgrade = upgradeService.createUpgrade(currentLevel, upgradeType);
 
@@ -62,7 +60,7 @@ public class TreeService {
         return upgrade;
     }
 
-    // TODO
+    // TODO: WEBSOCKETS
     private void leafProduction() {
         List<Tree> trees = treeRepo.findAll();
 

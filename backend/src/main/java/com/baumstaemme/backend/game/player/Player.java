@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +21,12 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     User user;
 
-    @ManyToOne()
-    @JoinColumn(name = "game_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
     Game game;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
