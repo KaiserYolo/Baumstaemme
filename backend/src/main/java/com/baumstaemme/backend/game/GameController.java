@@ -20,7 +20,7 @@ public class GameController {
 
     private final GameService gameService;
 
-    private static final Logger log = LoggerFactory.getLogger(GameController.class); // Maybe rausnehmen
+    private static final Logger log = LoggerFactory.getLogger(GameController.class);
 
     public GameController(GameService gameService) {
         this.gameService = gameService;

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "GAME")
+@Table(name = "GAMES")
 @Data
 public class Game {
 

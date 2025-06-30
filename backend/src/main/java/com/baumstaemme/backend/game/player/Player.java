@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "PLAYER")
+@Table(name = "PLAYERS")
 @Data
 public class Player {
 
