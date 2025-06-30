@@ -2,12 +2,13 @@ import WoodBox from "../components/WoodBox.jsx";
 import {useEffect, useState} from "react";
 import '../App.css';
 import {getAllGames, joinGameAPI} from "../services/JoinGameAPI.js";
+import {createGameAPI} from "../services/CreateGameAPI.js";
 
 export default function GameSelectionPage({onGameSelection}) {
     const [gameName, setGameName] = useState("");
     const [mapSize, setMapSize] = useState("");
     const [nameError, setNameError] = useState("");
-    const [selectedId, setSelectedId] = useState(null);
+    const [selectedId, setSelectedId] = useState("");
     const [gameList, setGameList] = useState([]);
 
     const [loading, setLoading] = useState(false);
@@ -32,8 +33,6 @@ export default function GameSelectionPage({onGameSelection}) {
                 getGames();
             }
     });
-
-
 
     if(loading){
         return(
@@ -116,18 +115,33 @@ export default function GameSelectionPage({onGameSelection}) {
         );
     }
 
-
-    const createGame = () => {
+    const createGame = async () => {
         if (gameName !== "" && gameName !== null && mapSize !== "" && gameName !== "") {
-            onGameSelection();
+            setNameError("");
+            try{
+                setSelectedId(await createGameAPI(gameName, mapSize));
+                await joinGame()
+            }
+            catch(err){
+                console.error("Error creating game", err);
+            }
         }
         else{
             setNameError("Something went wrong!");
         }
     }
 
-    const joinGame = () => {
-            onGameSelection();
+    const joinGame = async () => {
+            if(selectedId !== ""){
+                try{
+                    const status = await joinGameAPI(selectedId);
+                    if(status === 200){
+                        onGameSelection();
+                    }
+                }catch(err){
+                    console.error("Error creating game", err);
+                }
+            }
     }
 
     return (
