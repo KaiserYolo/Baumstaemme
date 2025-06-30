@@ -5,8 +5,9 @@ import {joinGameAPI} from "../services/JoinGameAPI.js";
 const TILE_SIZE = 64;
 const MAP_ID = 1;
 const TILE_ASSETS = {
-    tree: "/assets/Baum.png",
-    leer: "/assets/leer.png",
+    IS_OWNER: "/assets/Baum.png",
+    NO_OWNER: "/assets/Baum_leer.png",
+    NOT_OWNER: "/assets/Baum_gegner.png",
 }
 
 export const initializePixiApp = (containerRef, width, height) => {
@@ -49,9 +50,9 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
 
 
     backendData.tiles.forEach(tileInfo => {
-        const texturePath = TILE_ASSETS[tileInfo.type.toLowerCase()];
+        const texturePath = TILE_ASSETS[tileInfo.ownership.toUpperCase()];
         if (!texturePath) {
-            console.warn(`No texture found for tile type: ${tileInfo.type}`);
+            console.warn(`No texture found for tile type: ${tileInfo.ownership}`);
             return;
         }
 
