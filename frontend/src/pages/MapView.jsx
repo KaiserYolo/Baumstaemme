@@ -1,5 +1,4 @@
-// src/components/MapView.jsx
-import React, { useRef, useEffect, useState, useCallback } from 'react'; // Füge useCallback hinzu
+import React, { useRef, useEffect, useState } from 'react';
 import TileMenu from '../components/TileMenu.jsx';
 import { initializePixiApp, setupMapContainers, loadAndRenderTiles } from '../pixi/MapInitializer';
 import { setupPanningAndZooming } from '../pixi/InteractionManager';
@@ -9,6 +8,9 @@ const MapView = () => {
     const appRef = useRef(null);
     const mapContainerRef = useRef(null);
     const viewportRef = useRef(null);
+
+    const enableInteractionRef = useRef(null);
+    const disableInteractionRef = useRef(null);
 
     const [selectedTile, setSelectedTile] = useState(null);
 
@@ -23,13 +25,14 @@ const MapView = () => {
         const initMap = async () => {
             const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile);
             if (mapBounds) {
-                const { viewport } = setupPanningAndZooming(app, mapContainer, mapBounds); //getIsMenuOpen
+                const { viewport, enableInteraction, disableInteraction } = setupPanningAndZooming(app, mapContainer, mapBounds); //getIsMenuOpen
                         viewportRef.current = viewport;
                 if (viewport){
                     viewportRef.current = viewport;
-                }
-                else {
-                    console.log("Viewport net richtig", viewport);
+                    enableInteractionRef.current = enableInteraction;
+                    disableInteractionRef.current = disableInteraction;
+                } else {
+                    console.log("viewport didn't initialise", viewport);
                 }
             }
         };
@@ -49,18 +52,22 @@ const MapView = () => {
         };
     }, []);
 
-    /*
     useEffect(() => {
-        if (viewportRef.current) {
-            if (selectedTile !== null) {
-                viewportRef.current.pause();
+        if (selectedTile !== null) {
+            if (enableInteractionRef.current && typeof disableInteractionRef.current === 'function') {
+                disableInteractionRef.current();
             } else {
-                viewportRef.current.resume();
+                console.warn("disableInteraction function not available.");
+            }
+        } else {
+            if (disableInteractionRef.current && typeof enableInteractionRef.current === 'function') {
+                enableInteractionRef.current();
+            } else {
+                console.warn("enableInteraction function not available.");
             }
         }
     }, [selectedTile]);
 
-     */
 
 
     useEffect(() => {
@@ -83,7 +90,6 @@ const MapView = () => {
                 tileId = {{id: selectedTile.id}}
                 onClose={() => setSelectedTile(null)}
             />}
-
             <div ref={pixiContainerRef}/>
         </div>
     );

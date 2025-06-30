@@ -1,9 +1,8 @@
-// src/pixi/MapInitializer.js
 import * as PIXI from 'pixi.js';
 import {getMap} from "../services/MapAPI.js";
 import {joinGameAPI} from "../services/JoinGameAPI.js";
 
-const TILE_SIZE = 64; // Konstante für die Kachelgröße
+const TILE_SIZE = 64;
 const MAP_ID = 1;
 const TILE_ASSETS = {
     tree: "/assets/Baum.png",
@@ -15,7 +14,7 @@ export const initializePixiApp = (containerRef, width, height) => {
         width: width,
         height: height,
         backgroundColor: 0x0d7527,
-        antialias: true, // Optional: für glattere Kanten
+        antialias: true,
     });
     containerRef.appendChild(app.view);
     return app;
@@ -66,7 +65,7 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
 
         tile.interactive = true;
         tile.buttonMode = true;
-        tile.tileData = tileInfo; // Eigene Daten an das Sprite-Objekt hängen
+        tile.tileData = tileInfo;
 
         tile.on('pointerdown', (e) => {
             tile.initialPointerDownGlobal = e.data.global.clone();
@@ -87,11 +86,10 @@ export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
             const DRAG_THRESHOLD = 5;
 
             if (distance <= DRAG_THRESHOLD) {
-                console.log(`Kachel geklickt:`, tile.tileData);
+                console.log(`tile clicked:`, tile.tileData);
                 setSelectedTile(tile.tileData);
-                //e.stopPropagation();
             }else {
-                console.log("Kachel gedraggt (Menü nicht geöffnet):", tile.tileData)
+                console.log("tile dragged (menu didn't open):", tile.tileData)
             }
             delete tile.initialPointerDownGlobal;
         });
