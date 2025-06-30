@@ -18,14 +18,27 @@ export default function Form({onLogin}){
 
 
         if(buttonId === "login"){
-           console.log("login attempt");
-            const user = await loginUser({username, password});
-            onLogin();
+            try{
+                console.log("login attempt");
+                const user = await loginUser({username, password});
+                console.log(user);
+                onLogin();
+            }
+            catch{
+                setUsernameError("Check whether this username was registered.");
+                setPasswordError("Check whether you misspelled your password.")
+            }
         }
         else if(buttonId === "register"){
-            console.log("register attempt");
-            const user = await registerUser({username, password});
-            onLogin();
+            try{
+                console.log("register attempt");
+                const user = await registerUser({username, password});
+                onLogin();
+            }
+            catch{
+                setUsernameError("Try another username.");
+            }
+
         }
         else{
             console.log("error during login or register");

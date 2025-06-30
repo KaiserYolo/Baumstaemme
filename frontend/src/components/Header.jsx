@@ -1,7 +1,15 @@
 import '../App.css';
 import WoodBox from './WoodBox';
+import {logoutUser} from "../services/AuthAPI.js";
 
-export default function Header({onLoginClick, onLogoutClick, onTitleClick, page}) {
+
+
+export default function Header({onLoginClick, onTitleClick, page, onLogout}) {
+
+    const logOut = async () => {
+        await logoutUser();
+        onLogout();
+    }
 
     return (
         <header className="header">
@@ -10,7 +18,7 @@ export default function Header({onLoginClick, onLogoutClick, onTitleClick, page}
                     <WoodBox n={10} text="Die Baumstämme" className="header-title" />
                 </button>
                 {(page === "game" || page === "selection" ) ?
-                    (<button className="login-button" onClick={onLogoutClick}>
+                    (<button className="login-button" onClick={logOut}>
                         <WoodBox n={4} text="Logout" />
                     </button>)
                     :
