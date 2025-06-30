@@ -9,6 +9,8 @@ public class UpgradeDto {
     private UpgradeType building;
     private int targetLevel;
 
+    private int cost;
+
     private long duration;
     private long startTime;
     private long endTime;

@@ -91,7 +91,7 @@ public class TreeService {
         for (Tree tree : trees) {
             Upgrade upgrade = tree.getUpgrade();
             if (upgrade.getEndTime() <= now) {
-                tree.setBuildingLevel(upgrade.getBuilding());
+                tree.addBuildingLevel(upgrade.getBuilding());
                 tree.setUpgrade(null);
                 treeRepo.save(tree);
                 System.out.println("Upgrade für Tree ID: " + tree.getId() + " abgeschlossen und entfernt.");

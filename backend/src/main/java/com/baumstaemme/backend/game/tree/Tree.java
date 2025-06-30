@@ -76,7 +76,7 @@ public class Tree {
         }
     }
 
-    public void setBuildingLevel(UpgradeType building) {
+    public void addBuildingLevel(UpgradeType building) {
         switch (building) {
             case TRUNK -> trunk++;
             case BARK -> bark++;

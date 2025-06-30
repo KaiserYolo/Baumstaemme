@@ -1,116 +1,150 @@
 import WoodBox from "../components/WoodBox.jsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import '../App.css';
+import {getAllGames, joinGameAPI} from "../services/JoinGameAPI.js";
+import {createGameAPI} from "../services/CreateGameAPI.js";
 
 export default function GameSelectionPage({onGameSelection}) {
     const [gameName, setGameName] = useState("");
     const [mapSize, setMapSize] = useState("");
     const [nameError, setNameError] = useState("");
-    const [selectedId, setSelectedId] = useState(null);
+    const [selectedId, setSelectedId] = useState("");
+    const [gameList, setGameList] = useState([]);
 
-    const [gameList, setGameList] = useState(
-        [
-            {
-                "id": 1,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:53.301+00:00",
-                "status": "CREATED",
-                "mapId": 1,
-                "playerIdList": null,
-                "mapSize": 0
-            },
-            {
-                "id": 2,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.160+00:00",
-                "status": "CREATED",
-                "mapId": 2,
-                "playerIdList": null,
-                "mapSize": 0
-            },
-            {
-                "id": 3,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-            ,
-            {
-                "id": 4,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-            ,
-            {
-                "id": 5,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-            ,
-            {
-                "id": 6,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-            ,
-            {
-                "id": 7,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-            ,
-            {
-                "id": 8,
-                "name": "Server 1",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-            ,
-            {
-                "id": 9,
-                "name": "Server 9",
-                "created": "2025-06-29T19:11:57.827+00:00",
-                "status": "CREATED",
-                "mapId": 3,
-                "playerIdList": null,
-                "mapSize": 0
-            }
-        ]
-    );
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
-    const createGame = () => {
-        if (gameName !== "" && gameName !== null && mapSize !== "" && gameName !== "") {
-            onGameSelection();
+    const getGames = async () => {
+        setLoading(true);
+        setError(null);
+        try{
+            const data = await getAllGames();
+            setGameList(data);
+        }
+        catch(err){
+            console.error("Error getting game list", err);
+            setError(true);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        getGames();
+    }, []);
+
+    const joinGame = async (id = selectedId) => {
+        if(id !== ""){
+            try{
+                console.log("JoinGameAPI started");
+                await joinGameAPI(id);
+                console.log("JoinGameAPI was successful");
+                onGameSelection();
+            }catch(err){
+                console.error("Error creating game", err);
+            }
+        }
+    }
+
+    const createGame = async () => {
+        if (gameName !== "" && gameName !== null && mapSize !== "") {
+            setNameError("");
+            try{
+                const returnJson = await createGameAPI(gameName, mapSize);
+                console.log("create was successful ",returnJson);
+                await getGames();
+                setSelectedId(returnJson.id);
+                console.log("selectedId ", selectedId);
+                await joinGame(returnJson.id);
+            }
+            catch(err){
+                console.error("Error creating game", err);
+            }
         }
         else{
             setNameError("Something went wrong!");
         }
     }
 
-    const joinGame = () => {
-            onGameSelection();
+    if(loading){
+        return(
+            <div className="main-content">
+                <div className="game-selection">
+                    <form className="game-selection-half">
+                        <label className="game-selection-label">
+                            Create Game
+                        </label>
+                        <div className="game-selection-create-params">
+                            <a className="form-error">{nameError}</a>
+                            <div className="input-group">
+                                <label htmlFor="gamename">Name</label>
+                                <input id="gamename" onChange={e => setGameName(e.target.value)} value={gameName} type="text" placeholder="Name your game" required={true} />
+                            </div>
+
+                            <div className="input-group">
+                                <label htmlFor="mapsize">Size</label>
+                                <input id="mapsize" onChange={e => setMapSize(e.target.value)} value={mapSize} type="number" placeholder="Set map size" required={true} min={10} max={500}/>
+                            </div>
+                        </div>
+                        <button className="join-button" type="button" onClick={createGame}>
+                            <WoodBox n={8} text="Create Game" />
+                        </button>
+                    </form>
+                    <form className="game-selection-half">
+                        <label className="game-selection-label">
+                            Join Game
+                        </label>
+                        <div className="game-selection-game-list">
+                            Loaging Games...
+                        </div>
+                        <button className="join-button" type="button" onClick={joinGame}>
+                            <WoodBox n={8} text="Join Game" />
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    }
+
+    if(error && !gameList){
+        return(
+            <div className="main-content">
+                <div className="game-selection">
+                    <form className="game-selection-half">
+                        <label className="game-selection-label">
+                            Create Game
+                        </label>
+                        <div className="game-selection-create-params">
+                            <a className="form-error">{nameError}</a>
+                            <div className="input-group">
+                                <label htmlFor="gamename">Name</label>
+                                <input id="gamename" onChange={e => setGameName(e.target.value)} value={gameName} type="text" placeholder="Name your game" required={true} />
+                            </div>
+
+                            <div className="input-group">
+                                <label htmlFor="mapsize">Size</label>
+                                <input id="mapsize" onChange={e => setMapSize(e.target.value)} value={mapSize} type="number" placeholder="Set map size" required={true} min={10} max={500}/>
+                            </div>
+                        </div>
+                        <button className="join-button" type="button" onClick={createGame}>
+                            <WoodBox n={8} text="Create Game" />
+                        </button>
+                    </form>
+                    <form className="game-selection-half">
+                        <label className="game-selection-label">
+                            Join Game
+                        </label>
+                        <div className="game-selection-game-list">
+                            An error occured loading the games...
+                            Please try again!
+                        </div>
+                        <button className="join-button" type="button" onClick={joinGame}>
+                            <WoodBox n={8} text="Join Game" />
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -132,7 +166,7 @@ export default function GameSelectionPage({onGameSelection}) {
                             <input id="mapsize" onChange={e => setMapSize(e.target.value)} value={mapSize} type="number" placeholder="Set map size" required={true} min={10} max={500}/>
                         </div>
                     </div>
-                    <button className="join-button" type="submit" onClick={createGame}>
+                    <button className="join-button" type="button" onClick={createGame}>
                         <WoodBox n={8} text="Create Game" />
                     </button>
                 </form>
@@ -163,12 +197,13 @@ export default function GameSelectionPage({onGameSelection}) {
                                     checked={selectedId === game.id}
                                     onChange={() => setSelectedId(game.id)}
                                     style={{ marginRight: '10px' }}
+                                    required={true}
                                 />
                                 <strong>{game.name}</strong> — {new Date(game.created).toLocaleString()}
                             </div>
                         ))}
                     </div>
-                    <button className="join-button" type="submit" onClick={joinGame}>
+                    <button className="join-button" type="button" onClick={joinGame}>
                         <WoodBox n={8} text="Join Game" />
                     </button>
                 </form>
