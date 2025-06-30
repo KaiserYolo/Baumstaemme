@@ -14,29 +14,30 @@ export default function GameSelectionPage({onGameSelection}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
-    useEffect(() => {
-        const getGames = async () => {
-            setLoading(true);
-            setError(null);
-            try{
-                const data = await getAllGames();
-                setGameList(data);
-            }
-            catch(err){
-                console.error("Error getting game list", err);
-                setError(true);
-            }finally{
-                setLoading(false);
-            }
+    const getGames = async () => {
+        setLoading(true);
+        setError(null);
+        try{
+            const data = await getAllGames();
+            setGameList(data);
         }
-                getGames();
+        catch(err){
+            console.error("Error getting game list", err);
+            setError(true);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        getGames();
     }, []);
 
-    const joinGame = async () => {
-        if(selectedId !== ""){
+    const joinGame = async (id = selectedId) => {
+        if(id !== ""){
             try{
                 console.log("JoinGameAPI started");
-                await joinGameAPI(selectedId);
+                await joinGameAPI(id);
                 console.log("JoinGameAPI was successful");
                 onGameSelection();
             }catch(err){
@@ -51,8 +52,10 @@ export default function GameSelectionPage({onGameSelection}) {
             try{
                 const returnJson = await createGameAPI(gameName, mapSize);
                 console.log("create was successful ",returnJson);
+                await getGames();
                 setSelectedId(returnJson.id);
-                await joinGame()
+                console.log("selectedId ", selectedId);
+                await joinGame(returnJson.id);
             }
             catch(err){
                 console.error("Error creating game", err);
