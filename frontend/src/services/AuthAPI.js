@@ -27,3 +27,16 @@ export async function registerUser(credentials) {
 
     return response.json();
 }
+
+export async function logoutUser() {
+    const response = await fetch('http://localhost:8080/api/auth/logout', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error('Logout failed');
+    }
+
+    return response.json();
+}
