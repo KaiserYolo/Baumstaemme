@@ -52,16 +52,18 @@ const TileMenu = ({ tileId, onClose }) => {
                 <TileMenuTitleComponent name={`x: ${treeData.position.x}, y: ${treeData.position.y}`}/>
             </div>
             <div className="overlay-resource-info">
-                    <div className="overlay-resource">
-                        <TileMenuResourceComponent valueName={"leaves"} value={treeData.leaves}/>
-                        <TileMenuResourceComponent valueName={"troops"} value={"soon..."}/>
-                    </div>
+                {treeData.dtoType === "PRIVATE" && <div className="overlay-resource">
+                    <TileMenuResourceComponent valueName={"leaves"} value={treeData.leaves}/>
+                    <TileMenuResourceComponent valueName={"troops"} value={"soon..."}/>
+                </div>}
+
             </div>
             <div className="overlay-section">
-                <TileMenuComponent valueName={"Trunk"} value={treeData.trunk} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
-                <TileMenuComponent valueName={"Bark"} value={treeData.bark} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
-                <TileMenuComponent valueName={"Branches"} value={treeData.branches} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
-                <TileMenuComponent valueName={"Root"} value={treeData.root} buttonFunction={null} width={5} buttonText={"Upgrade"}/>
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Trunk"} value={treeData.trunk} buttonFunction={null} width={5} buttonText={"Upgrade"}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Bark"} value={treeData.bark} buttonFunction={null} width={5} buttonText={"Upgrade"}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Branches"} value={treeData.branches} buttonFunction={null} width={5} buttonText={"Upgrade"}/>}
+                {treeData.dtoType === "PRIVATE" && <TileMenuComponent valueName={"Root"} value={treeData.root} buttonFunction={null} width={5} buttonText={"Upgrade"}/>}
+                {treeData.dtoType === "PUBLIC" && <TileMenuComponent valueName={"Enemy troops"} value={0} buttonFunction={null} width={5} buttonText={"Attack"}/>}
             </div>
             <div className="overlay-section">
                 <button className="test-button" onClick={onClose}>
