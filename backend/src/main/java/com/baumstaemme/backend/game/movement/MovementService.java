@@ -1,6 +1,9 @@
 package com.baumstaemme.backend.game.movement;
 
+import com.baumstaemme.backend.game.report.Report;
 import com.baumstaemme.backend.game.report.ReportRepo;
+import com.baumstaemme.backend.game.report.ReportService;
+import com.baumstaemme.backend.game.report.ReportType;
 import com.baumstaemme.backend.game.tree.Tree;
 import com.baumstaemme.backend.game.tree.TreeService;
 import com.baumstaemme.backend.game.unit.Unit;
@@ -22,13 +25,29 @@ public class MovementService {
     private final TreeService treeService;
     private final ReportRepo reportRepo;
     private final UnitService unitService;
+    private final ReportService reportService;
 
-    public MovementService(MovementRepo movementRepo, MovementUnitRepo movementUnitRepo, TreeService treeService, ReportRepo reportRepo, UnitService unitService) {
+    public MovementService(MovementRepo movementRepo, MovementUnitRepo movementUnitRepo, TreeService treeService, ReportRepo reportRepo, UnitService unitService, ReportService reportService) {
         this.movementRepo = movementRepo;
         this.movementUnitRepo = movementUnitRepo;
         this.treeService = treeService;
         this.reportRepo = reportRepo;
         this.unitService = unitService;
+        this.reportService = reportService;
+    }
+
+    public void delete(Movement movement) {
+        movementRepo.delete(movement);
+    }
+
+    public void delete(MovementUnit movementUnit) {
+        movementUnitRepo.delete(movementUnit);
+    }
+
+    public void deleteList(List<MovementUnit> movementUnits) {
+        for (MovementUnit movementUnit : movementUnits) {
+            delete(movementUnit);
+        }
     }
 
     public Movement save(Movement movement) {
@@ -132,41 +151,41 @@ public class MovementService {
 
         for (Movement movement : arrivedMovements) {
             if (movement.getMovementType() == MovementType.ATTACK) {
-                //simulateCombat(movement);
+                simulateCombat(movement);
+            } else if (movement.getMovementType() == MovementType.RETURN) {
+                returnUnitsToVillage(movement);
             }
             movement.setMovementStatus(MovementStatus.ARRIVED); // Setze Status auf abgeschlossen
             save(movement);
         }
     }
-    /*
+
     private void simulateCombat(Movement attack) {
         Tree attacker = attack.getOrigin();
         Tree defender = attack.getTarget();
 
         // Einheiten des Angreifers (die gesendeten Einheiten)
-        List<MovementUnit> attackerUnits = ;
+        List<MovementUnit> attackerUnits = attack.getUnits();
         // Einheiten des Verteidigers (aktuell im Dorf)
-        List<Unit> defenderUnits = unitRepository.findByVillage(defenderVillage);
+        List<Unit> defenderUnits = attack.getTarget().getUnits();
 
         // TODO: Implementiere hier eine detaillierte Kampfsimulation
         // Dies ist ein sehr vereinfachter Platzhalter!
         // Eine echte Simulation würde Faktoren wie Mauern, Verteidigungsboni,
         // Moral, Einheitentypen (Pikeniere gegen Kavallerie etc.) berücksichtigen.
 
-        long attackerPower = attackerUnits.stream()
-                .mapToLong(au -> (long) au.getCount() * UNIT_ATTACK_POWER.getOrDefault(au.getUnitType(), 0))
-                .sum();
-        long defenderPower = defenderUnits.stream()
-                .mapToLong(du -> (long) du.getCount() * UNIT_DEFENSE_POWER.getOrDefault(du.getUnitType(), 0))
-                .sum();
+        int attackerPower = attackerUnits.stream().mapToInt(unit -> unit.getUnitType().getAttack() * unit.getCount()).sum();
+        int defenderPower = defenderUnits.stream().mapToInt(unit -> unit.getUnitType().getDefense() * unit.getCount()).sum();
 
         String combatReportContent;
+        boolean isAlive = false;
         if (attackerPower > defenderPower * 1.2) { // Beispiel: Angreifer gewinnt deutlich
+            isAlive = true;
             combatReportContent = "Der Angreifer hat mit " + attackerPower + " Angriffsstärke gegen den Verteidiger mit " + defenderPower + " Verteidigungsstärke klar gewonnen. Das Dorf wurde geplündert und ein Großteil der Verteidiger getötet.";
             // Verteidiger-Einheiten reduzieren (z.B. 80% Verlust)
             for (Unit dUnit : defenderUnits) {
                 dUnit.setCount((int) (dUnit.getCount() * 0.2)); // 80% Verlust
-                unitRepository.save(dUnit);
+                unitService.save(dUnit);
             }
             // Ressourcen plündern (implementiere Logik hier)
             // villageService.deductResources für Verteidiger, addResources für Angreifer
@@ -174,34 +193,102 @@ public class MovementService {
         } else if (defenderPower > attackerPower * 1.2) { // Verteidiger gewinnt deutlich
             combatReportContent = "Der Verteidiger hat mit " + defenderPower + " Verteidigungsstärke den Angriff mit " + attackerPower + " Angriffsstärke abgewehrt. Die Angreifer wurden größtenteils vernichtet.";
             // Angreifer-Einheiten werden vernichtet, daher keine Rückkehr
-            attackUnitRepository.deleteAll(attackerUnits); // Alle Angreifer-Einheiten löschen
+            deleteList(attackerUnits); // Alle Angreifer-Einheiten löschen
 
         } else { // Unentschieden oder knapper Kampf
+            isAlive = true;
             combatReportContent = "Es war ein harter Kampf. Beide Seiten haben Verluste erlitten.";
             // Beide Seiten verlieren einen Teil der Einheiten (z.B. 50% Verlust)
             for (Unit dUnit : defenderUnits) {
                 dUnit.setCount((int) (dUnit.getCount() * 0.5));
-                unitRepository.save(dUnit);
+                unitService.save(dUnit);
             }
-            for (AttackUnit aUnit : attackerUnits) {
+            for (MovementUnit aUnit : attackerUnits) {
                 aUnit.setCount((int) (aUnit.getCount() * 0.5));
-                attackUnitRepository.save(aUnit); // Angreifer-Einheiten bleiben bestehen für Rückweg
+                save(aUnit); // Angreifer-Einheiten bleiben bestehen für Rückweg
             }
         }
 
         // Generiere Kampfbericht
         Report report = new Report();
-        report.setUser(defenderVillage.getUser()); // Bericht an Verteidiger
-        report.setReportType(Report.ReportType.COMBAT);
-        report.setTitle("Kampfbericht: Angriff auf " + defenderVillage.getName());
-        report.setContent(combatReportContent + "\nAngreifer: " + attackerVillage.getName() + " (" + attackerVillage.getUser().getUsername() + ")" +
-                "\nVerteidiger: " + defenderVillage.getName() + " (" + defenderVillage.getUser().getUsername() + ")");
-        reportRepository.save(report);
+        report.setPlayer(defender.getOwner()); // Bericht an Verteidiger
+        report.setReportType(ReportType.COMBAT);
+        report.setTitle("Kampfbericht: Angriff auf " + defender.getName());
+        report.setContent(combatReportContent + "\nAngreifer: " + attacker.getName() + " (" + attacker.getOwner().getUser().getUsername() + ")" +
+                "\nVerteidiger: " + defender.getName() + " (" + defender.getOwner().getUser().getUsername() + ")");
+        reportService.save(report);
 
         // Optional: Einen Rückzugsbefehl für die verbleibenden Angreifer-Einheiten erstellen
-        if (!attackerUnits.isEmpty() && attackUnitRepository.findByAttack_Id(attack.getId()).stream().anyMatch(au -> au.getCount() > 0)) {
+        if (!attackerUnits.isEmpty() && isAlive) {
             sendReturnTrip(attack, attackerUnits);
         }
     }
-    */
+
+    private void returnUnitsToVillage(Movement attack) {
+        Tree originTree = attack.getOrigin();
+        List<MovementUnit> returningUnits = attack.getUnits();
+
+        for (MovementUnit retUnit : returningUnits) {
+            Unit villageUnit = originTree.getUnits().stream().filter(unit -> unit.getUnitType() == retUnit.getUnitType()).findFirst()//unitRepository.findByVillageAndUnitType(originVillage, retUnit.getUnitType())
+                    .orElseGet(() -> {
+                        Unit newUnit = new Unit();
+                        newUnit.setTree(originTree);
+                        newUnit.setUnitType(retUnit.getUnitType());
+                        newUnit.setCount(0);
+                        return newUnit;
+                    });
+            villageUnit.setCount(villageUnit.getCount() + retUnit.getCount());
+            unitService.save(villageUnit);
+        }
+        deleteList(returningUnits); // Einheiten sind zurück, AttackUnits löschen
+    }
+
+    private void sendReturnTrip(Movement originalAttack, List<MovementUnit> unitsToReturn) {
+        Tree origin = originalAttack.getTarget(); // Ursprüngliches Ziel ist jetzt Startpunkt
+        Tree target = originalAttack.getOrigin(); // Ursprünglicher Start ist jetzt Ziel
+
+        // Berechne die Geschwindigkeit der verbleibenden Einheiten neu, falls Verluste aufgetreten sind
+        int slowestReturnSpeed = Integer.MAX_VALUE;
+        boolean hasReturningUnits = false;
+        for(MovementUnit au : unitsToReturn) {
+            if (au.getCount() > 0) {
+                slowestReturnSpeed = Math.min(slowestReturnSpeed, au.getUnitType().getSpeed());
+                hasReturningUnits = true;
+            }
+        }
+        if (!hasReturningUnits) {
+            return; // Keine Einheiten kehren zurück
+        }
+
+        double distance = calculateDistance(origin.getPosition(), target.getPosition());
+        double travelTimeHours = distance / slowestReturnSpeed;
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime arrivalTime = startTime.plusSeconds((long) (travelTimeHours * 3600));
+
+        Movement returnAttack = new Movement();
+        returnAttack.setOrigin(origin);
+        returnAttack.setTarget(target);
+        returnAttack.setMovementType(MovementType.RETURN);
+        returnAttack.setStartTime(startTime);
+        returnAttack.setArrivalTime(arrivalTime);
+        returnAttack.setMovementStatus(MovementStatus.PENDING);
+        returnAttack = save(returnAttack);
+
+        for (MovementUnit au : unitsToReturn) {
+            if (au.getCount() > 0) {
+                // Erstelle neue AttackUnit-Einträge für den Rückweg
+               MovementUnit newReturnUnit = new MovementUnit();
+                newReturnUnit.setMovement(returnAttack);
+                newReturnUnit.setUnitType(au.getUnitType());
+                newReturnUnit.setCount(au.getCount());
+                save(newReturnUnit);
+            }
+        }
+    }
+
+    // TODO: Diese Methode wird von einem Scheduler aufgerufen
+    @Transactional
+    public void processIncomingAttacks() {
+        processArrivedMovements();
+    }
 }

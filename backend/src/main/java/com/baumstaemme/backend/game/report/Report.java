@@ -1,5 +1,6 @@
 package com.baumstaemme.backend.game.report;
 
+import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,8 +17,11 @@ public class Report {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "player_id")
+    private Player player;
+
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
 
     private String title;
 

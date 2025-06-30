@@ -94,6 +94,10 @@ public class UnitService {
         delete(queueEntry);
     }
 
+    public List<UnitQueueEntry> getPendingUnitRecruitments(Long treeId) {
+        return unitQueueEntryRepo.findAll().stream().filter(e -> e.getTree().getId().equals(treeId)).collect(Collectors.toList());
+    }
+
     @Transactional
     public void processUnitRecruitment() {
         LocalDateTime now = LocalDateTime.now();

@@ -1,6 +1,7 @@
 package com.baumstaemme.backend.game;
 
 import com.baumstaemme.backend.game.map.MapService;
+import com.baumstaemme.backend.game.movement.MovementService;
 import com.baumstaemme.backend.game.player.Player;
 import com.baumstaemme.backend.game.player.PlayerService;
 import com.baumstaemme.backend.game.tree.Tree;
@@ -24,14 +25,16 @@ public class GameService {
     private final PlayerService playerService;
     private final TreeService treeService;
     private final UnitService unitService;
+    private final MovementService movementService;
 
-    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService, TreeService treeService, UnitService unitService) {
+    public GameService(GameRepo gameRepo, MapService mapService, UserService userService, PlayerService playerService, TreeService treeService, UnitService unitService, MovementService movementService) {
         this.gameRepo = gameRepo;
         this.mapService = mapService;
         this.userService = userService;
         this.playerService = playerService;
         this.treeService = treeService;
         this.unitService = unitService;
+        this.movementService = movementService;
     }
 
     public Game save(Game game) {
@@ -106,5 +109,7 @@ public class GameService {
         treeService.processUpgrade();
 
         unitService.processUnitRecruitment();
+
+        movementService.processIncomingAttacks();
     }
 }

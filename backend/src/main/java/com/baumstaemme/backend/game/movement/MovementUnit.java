@@ -10,6 +10,9 @@ import lombok.Data;
 public class MovementUnit {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movement_id")
     private Movement movement;
