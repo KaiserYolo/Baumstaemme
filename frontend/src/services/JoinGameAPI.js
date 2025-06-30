@@ -29,9 +29,10 @@ export const getAllGames = async () => {
             throw new Error(response.statusText);
         }
         const json = await response.json()
-        console.log(json);
+        console.log("JoinGameAPI.js: All games received:", json);
         return json;
     } catch(error) {
-        console.log(error);
+        console.error("JoinGameAPI.js: Error in getAllGames:", error);
+        throw error;
     }
 }

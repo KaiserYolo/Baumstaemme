@@ -3,7 +3,7 @@ import TileMenu from '../components/TileMenu.jsx';
 import { initializePixiApp, setupMapContainers, loadAndRenderTiles } from '../pixi/MapInitializer';
 import { setupPanningAndZooming } from '../pixi/InteractionManager';
 
-const MapView = () => {
+const MapView = ({ gameId }) => {
     const pixiContainerRef = useRef(null);
     const appRef = useRef(null);
     const mapContainerRef = useRef(null);
@@ -11,6 +11,7 @@ const MapView = () => {
 
     const enableInteractionRef = useRef(null);
     const disableInteractionRef = useRef(null);
+    const cleanupInteractionManagerRef = useRef(null);
 
     const [selectedTile, setSelectedTile] = useState(null);
 
@@ -23,14 +24,15 @@ const MapView = () => {
         mapContainerRef.current = mapContainer;
 
         const initMap = async () => {
-            const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile);
+            const mapBounds = await loadAndRenderTiles(mapContainer, setSelectedTile, gameId);
             if (mapBounds) {
-                const { viewport, enableInteraction, disableInteraction } = setupPanningAndZooming(app, mapContainer, mapBounds); //getIsMenuOpen
+                const { viewport, enableInteraction, disableInteraction, cleanupInteractionManager } = setupPanningAndZooming(app, mapContainer, mapBounds); //getIsMenuOpen
                         viewportRef.current = viewport;
                 if (viewport){
                     viewportRef.current = viewport;
                     enableInteractionRef.current = enableInteraction;
                     disableInteractionRef.current = disableInteraction;
+                    cleanupInteractionManagerRef.current = cleanupInteractionManager;
                 } else {
                     console.log("viewport didn't initialise", viewport);
                 }
@@ -40,6 +42,11 @@ const MapView = () => {
         initMap();
 
         return () => {
+            if (cleanupInteractionManagerRef.current) {
+                cleanupInteractionManagerRef.current();
+                cleanupInteractionManagerRef.current = null;
+            }
+
             if (viewportRef.current) {
                 viewportRef.current.destroy({children: true, texture: true, baseTexture: true});
                 viewportRef.current = null;
@@ -50,7 +57,7 @@ const MapView = () => {
                 appRef.current = null;
             }
         };
-    }, []);
+    }, [gameId]);
 
     useEffect(() => {
         if (selectedTile !== null) {

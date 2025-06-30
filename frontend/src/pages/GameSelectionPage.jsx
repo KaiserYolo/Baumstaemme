@@ -20,6 +20,7 @@ export default function GameSelectionPage({onGameSelection}) {
         try{
             const data = await getAllGames();
             setGameList(data);
+            console.log(data);
         }
         catch(err){
             console.error("Error getting game list", err);
@@ -37,9 +38,9 @@ export default function GameSelectionPage({onGameSelection}) {
         if(id !== ""){
             try{
                 console.log("JoinGameAPI started");
-                await joinGameAPI(id);
-                console.log("JoinGameAPI was successful");
-                onGameSelection();
+                await joinGameAPI(selectedId);
+                console.log("JoinGameAPI was successful" + selectedId);
+                onGameSelection(selectedId);
             }catch(err){
                 console.error("Error creating game", err);
             }

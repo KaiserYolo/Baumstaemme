@@ -1,9 +1,7 @@
 import * as PIXI from 'pixi.js';
 import {getMap} from "../services/MapAPI.js";
-import {joinGameAPI} from "../services/JoinGameAPI.js";
 
 const TILE_SIZE = 64;
-const MAP_ID = 1;
 const TILE_ASSETS = {
     IS_OWNER: "/assets/Baum.png",
     NO_OWNER: "/assets/Baum_leer.png",
@@ -31,9 +29,8 @@ export const setupMapContainers = (app) => {
     return { mapContainer, uiContainer };
 };
 
-export const loadAndRenderTiles = async (mapContainer, setSelectedTile) => {
-    await joinGameAPI(1);
-    const backendData = await getMap(MAP_ID);
+export const loadAndRenderTiles = async (mapContainer, setSelectedTile, mapId) => {
+    const backendData = await getMap(mapId);
 
     if (!backendData || !backendData.tiles) {
         console.error("Failed to load map data or essential properties are missing.");
