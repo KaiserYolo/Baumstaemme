@@ -65,7 +65,7 @@ public class GameService {
         User user = userService.findById(userId);
 
         Optional<Player> existingPlayer = game.getPlayers().stream()
-                .filter(p -> p.getId().equals(id))
+                .filter(p -> p.getId().equals(userId))
                 .findFirst();
         if (existingPlayer.isPresent()) {
             return existingPlayer.get();
